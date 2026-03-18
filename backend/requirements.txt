@@ -1,0 +1,8 @@
+flask
+sqlalchemy
+alembic
+flask-jwt-extended
+pytest
+apscheduler
+psycopg2-binary
+flask-cors
