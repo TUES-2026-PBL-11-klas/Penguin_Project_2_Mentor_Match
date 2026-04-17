@@ -1,8 +1,14 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import CheckConstraint, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 from app.db.models.common import TimestampMixin
+
+if TYPE_CHECKING:
+    from app.db.models.session import Session
+    from app.db.models.user import User
 
 
 class Review(TimestampMixin, Base):
@@ -17,9 +23,17 @@ class Review(TimestampMixin, Base):
     )
     mentor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     student_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    reviewer_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    reviewed_user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE")
+    )
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
     comment: Mapped[str | None] = mapped_column(Text)
 
-    session = relationship("Session", back_populates="review")
-    mentor = relationship("User", back_populates="reviews_received", foreign_keys=[mentor_id])
-    student = relationship("User", back_populates="reviews_written", foreign_keys=[student_id])
+    session: Mapped["Session"] = relationship("Session", back_populates="review")
+    mentor: Mapped["User"] = relationship(
+        "User", back_populates="reviews_received", foreign_keys=[mentor_id]
+    )
+    student: Mapped["User"] = relationship(
+        "User", back_populates="reviews_written", foreign_keys=[student_id]
+    )
