@@ -139,7 +139,6 @@ class UserService:
             "grade": user.grade,
             "class_letter": user.class_letter,
             "role": user.role,
-            "bio": user.bio,
             "profile_picture": user.profile_picture,
         }
 
