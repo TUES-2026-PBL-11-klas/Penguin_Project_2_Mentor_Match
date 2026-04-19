@@ -3,6 +3,17 @@ from flask import Flask, jsonify
 from app.db import init_db
 from app.seed import register_seed_commands
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s — %(message)s",
+    handlers=[
+        logging.FileHandler("/app/logs/app.log"),
+        logging.StreamHandler(),
+    ]
+)
+
 
 def create_app() -> Flask:
     app = Flask(__name__)

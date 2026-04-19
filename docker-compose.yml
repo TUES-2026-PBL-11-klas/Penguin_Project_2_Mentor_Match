@@ -9,6 +9,9 @@ services:
       - db
     env_file:
       - .env
+    volumes:
+      - ./backend:/app
+      - ./logs:/app/logs
 
 #  frontend:
 #    build: ./frontend
