@@ -5,9 +5,9 @@ from uuid import UUID
 import jwt
 from flask import g, jsonify, request
 
-from auth.service import UserService
-from db.models import User
-from db.sessions import SessionLocal
+from app.auth.service import UserService
+from app.db.models.user import User
+from app.db.session import SessionLocal
 
 
 def get_current_user_id() -> Optional[UUID]:
@@ -24,10 +24,7 @@ def get_current_user_id() -> Optional[UUID]:
 
 
 def require_auth(f: Callable) -> Callable:
-    """
-    Decorator: protects a route — requires a valid JWT.
-    Sets g.current_user_id for use inside the route handler.
-    """
+    """Decorator: requires a valid JWT. Sets g.current_user_id."""
     @wraps(f)
     def decorated(*args, **kwargs):
         user_id = get_current_user_id()

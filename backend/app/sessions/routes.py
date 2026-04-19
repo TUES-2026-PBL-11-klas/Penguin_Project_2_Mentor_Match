@@ -3,16 +3,16 @@ from uuid import UUID
 
 from flask import Blueprint, g, jsonify, request
 
-from auth.middleware import require_auth, require_mentor
-from db.sessions import get_db
-from sessions.exceptions import (
+from app.auth.middleware import require_auth, require_mentor
+from app.db.models.user import User
+from app.db.session import get_db
+from app.sessions.exceptions import (
     MentorUnavailableException,
     SessionConflictException,
     SessionNotFoundException,
     UnauthorizedSessionActionException,
 )
-from db.models import User
-from sessions.service import SessionService
+from app.sessions.service import SessionService
 
 sessions_bp = Blueprint("sessions", __name__, url_prefix="/api/sessions")
 
@@ -24,10 +24,7 @@ sessions_bp = Blueprint("sessions", __name__, url_prefix="/api/sessions")
 @sessions_bp.route("/request", methods=["POST"])
 @require_auth
 def request_session():
-    """
-    POST /api/sessions/request
-    Body: { mentor_id, subject_id, scheduled_at, end_at, notes? }
-    """
+    """POST /api/sessions/request"""
     data = request.get_json() or {}
     required = ["mentor_id", "subject_id", "scheduled_at", "end_at"]
     missing = [f for f in required if f not in data]
@@ -69,7 +66,7 @@ def request_session():
 @sessions_bp.route("/requests", methods=["GET"])
 @require_mentor
 def get_pending_requests():
-    """GET /api/sessions/requests — mentor's pending session requests page."""
+    """GET /api/sessions/requests — mentor's session requests page."""
     with get_db() as db:
         svc = SessionService(db)
         sessions = svc.get_pending_requests(g.current_user_id)
@@ -126,7 +123,7 @@ def decline_session(session_id: str):
 @sessions_bp.route("/<session_id>/cancel", methods=["POST"])
 @require_auth
 def cancel_session(session_id: str):
-    """POST /api/sessions/<id>/cancel — available to mentor or mentee."""
+    """POST /api/sessions/<id>/cancel"""
     with get_db() as db:
         svc = SessionService(db)
         try:
@@ -143,7 +140,7 @@ def cancel_session(session_id: str):
 @sessions_bp.route("/mentor/calendar", methods=["GET"])
 @require_mentor
 def mentor_calendar():
-    """GET /api/sessions/mentor/calendar — mentor's upcoming confirmed sessions."""
+    """GET /api/sessions/mentor/calendar"""
     with get_db() as db:
         svc = SessionService(db)
         return jsonify(svc.get_mentor_calendar(g.current_user_id)), 200
@@ -152,7 +149,7 @@ def mentor_calendar():
 @sessions_bp.route("/student/calendar", methods=["GET"])
 @require_auth
 def student_calendar():
-    """GET /api/sessions/student/calendar — student's upcoming sessions."""
+    """GET /api/sessions/student/calendar"""
     with get_db() as db:
         svc = SessionService(db)
         return jsonify(svc.get_student_calendar(g.current_user_id)), 200
@@ -161,7 +158,7 @@ def student_calendar():
 @sessions_bp.route("/student/history", methods=["GET"])
 @require_auth
 def student_history():
-    """GET /api/sessions/student/history — student's completed sessions."""
+    """GET /api/sessions/student/history"""
     with get_db() as db:
         svc = SessionService(db)
         return jsonify(svc.get_student_history(g.current_user_id)), 200
@@ -174,7 +171,6 @@ def student_history():
 @sessions_bp.route("/availability", methods=["GET"])
 @require_mentor
 def get_availability():
-    """GET /api/sessions/availability"""
     with get_db() as db:
         svc = SessionService(db)
         avails = svc.get_availability(g.current_user_id)
@@ -193,7 +189,6 @@ def get_availability():
 @sessions_bp.route("/availability", methods=["POST"])
 @require_mentor
 def add_availability():
-    """POST /api/sessions/availability — add a recurring slot."""
     data = request.get_json() or {}
     try:
         from datetime import time
@@ -218,7 +213,6 @@ def add_availability():
 @sessions_bp.route("/availability/<avail_id>", methods=["DELETE"])
 @require_mentor
 def delete_availability(avail_id: str):
-    """DELETE /api/sessions/availability/<id>"""
     with get_db() as db:
         svc = SessionService(db)
         try:
@@ -229,16 +223,13 @@ def delete_availability(avail_id: str):
 
 
 # ------------------------------------------------------------------
-# Mentor: Unavailable slots (specific blocked date-time ranges)
+# Unavailable slots
 # ------------------------------------------------------------------
 
 @sessions_bp.route("/unavailable", methods=["GET"])
 @require_auth
 def get_unavailable():
-    """
-    GET /api/sessions/unavailable?mentor_id=<id>
-    Students need to fetch this to show blocked slots on the calendar.
-    """
+    """GET /api/sessions/unavailable?mentor_id=<id>"""
     mentor_id_str = request.args.get("mentor_id")
     if not mentor_id_str:
         mentor_id = g.current_user_id
@@ -256,7 +247,6 @@ def get_unavailable():
 @sessions_bp.route("/unavailable", methods=["POST"])
 @require_mentor
 def add_unavailable():
-    """POST /api/sessions/unavailable — mentor marks a time range as unavailable."""
     data = request.get_json() or {}
     try:
         start = datetime.fromisoformat(data["start_datetime"])
@@ -278,7 +268,6 @@ def add_unavailable():
 @sessions_bp.route("/unavailable/<slot_id>", methods=["DELETE"])
 @require_mentor
 def delete_unavailable(slot_id: str):
-    """DELETE /api/sessions/unavailable/<id>"""
     with get_db() as db:
         svc = SessionService(db)
         removed = svc.remove_unavailable_slot(UUID(slot_id), g.current_user_id)
@@ -294,10 +283,7 @@ def delete_unavailable(slot_id: str):
 @sessions_bp.route("/mentors/search", methods=["GET"])
 @require_auth
 def search_mentors():
-    """
-    GET /api/sessions/mentors/search?subject_id=&name=
-    Returns ranked mentor list using the Strategy Pattern.
-    """
+    """GET /api/sessions/mentors/search?subject_id=&name="""
     subject_id = request.args.get("subject_id", type=int)
     name = request.args.get("name")
 

@@ -4,8 +4,8 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session as DBSession
 
-from db.models import Availability, UnavailableSlot
-from db.models import Session as SessionModel
+from app.db.models.availability import Availability, UnavailableSlot
+from app.db.models.session import Session as SessionModel
 
 
 class SessionRepository:
@@ -43,7 +43,7 @@ class SessionRepository:
         return q.order_by(SessionModel.scheduled_at.asc()).all()
 
     def get_pending_requests_for_mentor(self, mentor_id: UUID) -> List[SessionModel]:
-        """All pending (unactioned) session requests for a mentor."""
+        """All pending session requests for a mentor."""
         return (
             self._db.query(SessionModel)
             .filter(
@@ -54,15 +54,10 @@ class SessionRepository:
             .all()
         )
 
-    def update_status(self, session: SessionModel, new_status: str) -> SessionModel:
-        session.status = new_status
-        self._db.flush()
-        return session
-
     def get_sessions_between(
         self, mentor_id: UUID, start: datetime, end: datetime
     ) -> List[SessionModel]:
-        """Find pending/confirmed sessions that overlap with the given time window."""
+        """Find pending/confirmed sessions overlapping with a time window."""
         return (
             self._db.query(SessionModel)
             .filter(
@@ -71,20 +66,6 @@ class SessionRepository:
                 SessionModel.scheduled_at < end,
                 SessionModel.end_at > start,
             )
-            .all()
-        )
-
-    def get_upcoming_sessions(self, user_id: UUID) -> List[SessionModel]:
-        """All future confirmed sessions for a user (as mentor or mentee)."""
-        now = datetime.utcnow()
-        return (
-            self._db.query(SessionModel)
-            .filter(
-                SessionModel.status == "confirmed",
-                SessionModel.scheduled_at > now,
-                (SessionModel.mentor_id == user_id) | (SessionModel.mentee_id == user_id),
-            )
-            .order_by(SessionModel.scheduled_at.asc())
             .all()
         )
 
@@ -111,7 +92,7 @@ class SessionRepository:
             self._db.flush()
 
     # ------------------------------------------------------------------
-    # Unavailable Slots (specific blocked date-time ranges)
+    # Unavailable Slots
     # ------------------------------------------------------------------
 
     def get_unavailable_slots(self, mentor_id: UUID) -> List[UnavailableSlot]:
@@ -145,7 +126,7 @@ class SessionRepository:
     def get_overlapping_unavailable_slots(
         self, mentor_id: UUID, start: datetime, end: datetime
     ) -> List[UnavailableSlot]:
-        """Find unavailable slots that overlap with a proposed session window."""
+        """Find unavailable slots overlapping with a proposed session window."""
         return (
             self._db.query(UnavailableSlot)
             .filter(

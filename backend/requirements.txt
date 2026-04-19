@@ -1,8 +1,10 @@
 flask
 sqlalchemy
 alembic
-flask-jwt-extended
+bcrypt
+PyJWT
 pytest
+pytest-cov
 apscheduler
 psycopg2-binary
 flask-cors

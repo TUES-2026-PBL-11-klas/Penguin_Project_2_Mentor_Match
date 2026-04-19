@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
 from uuid import UUID
@@ -6,10 +7,9 @@ import bcrypt
 import jwt
 from sqlalchemy.orm import Session
 
-from auth.repository import UserRepository
-from db.models import Subject, User
-
-import os
+from app.auth.repository import UserRepository
+from app.db.models.user import User
+from app.db.models.subject import Subject
 
 JWT_SECRET = os.environ.get("JWT_SECRET", "change_me_in_production")
 JWT_ALGORITHM = "HS256"
@@ -50,7 +50,6 @@ class UserService:
     """
 
     def __init__(self, db: Session) -> None:
-        # DIP: inject the DB session; the repository is created internally
         self._repo = UserRepository(db)
         self._db = db
 
@@ -70,7 +69,7 @@ class UserService:
         subject_ids: Optional[List[int]] = None,
     ) -> User:
         """
-        Register a new user. If role includes mentor, attach chosen subjects.
+        Register a new user.
         Typed generics: Optional[List[int]] for subject_ids.
         """
         if self._repo.get_by_email(email):
@@ -209,7 +208,6 @@ class UserService:
         """
         mentors = self._repo.search_mentors(name=name, subject_id=subject_id)
 
-        # map() to transform User objects to dicts (curriculum requirement)
         return list(map(
             lambda m: {
                 "id": str(m.id),
@@ -250,5 +248,5 @@ class UserService:
 
     @staticmethod
     def decode_token(token: str) -> Dict:
-        """Decode and validate a JWT. Raises jwt.ExpiredSignatureError on expiry."""
+        """Decode and validate a JWT."""
         return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])

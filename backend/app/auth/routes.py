@@ -2,15 +2,15 @@ from uuid import UUID
 
 from flask import Blueprint, g, jsonify, request
 
-from auth.middleware import require_auth, require_mentor
-from auth.service import (
+from app.auth.middleware import require_auth
+from app.auth.service import (
     AuthenticationError,
     RoleAlreadyAssignedError,
     UserAlreadyExistsError,
     UserNotFoundError,
     UserService,
 )
-from db.sessions import get_db
+from app.db.session import get_db
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
@@ -107,7 +107,6 @@ def add_role():
     """
     POST /api/auth/add-role
     Body: { role: "mentor" | "student", subject_ids?: [...] }
-    Adds the opposite role to the user (the 'add role' button from Mentor_Match_Logic).
     """
     data = request.get_json() or {}
     new_role = data.get("role")
@@ -126,10 +125,7 @@ def add_role():
 @auth_bp.route("/mentors", methods=["GET"])
 @require_auth
 def list_mentors():
-    """
-    GET /api/auth/mentors?name=...&subject_id=...
-    Search/list mentors (requires auth).
-    """
+    """GET /api/auth/mentors?name=...&subject_id=..."""
     name = request.args.get("name")
     subject_id = request.args.get("subject_id", type=int)
 
@@ -142,7 +138,7 @@ def list_mentors():
 @auth_bp.route("/mentors/<mentor_id>", methods=["GET"])
 @require_auth
 def get_mentor_profile(mentor_id: str):
-    """GET /api/auth/mentors/<id> — full mentor profile for the detail page."""
+    """GET /api/auth/mentors/<id> — full mentor profile."""
     try:
         mid = UUID(mentor_id)
     except ValueError:
@@ -159,7 +155,7 @@ def get_mentor_profile(mentor_id: str):
 
 @auth_bp.route("/subjects", methods=["GET"])
 def list_subjects():
-    """GET /api/auth/subjects — list all subjects (public, used during registration)."""
+    """GET /api/auth/subjects — list all subjects (public)."""
     with get_db() as db:
         svc = UserService(db)
         subjects = svc.get_all_subjects()

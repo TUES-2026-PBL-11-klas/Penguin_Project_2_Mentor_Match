@@ -5,8 +5,7 @@ from sqlalchemy import CheckConstraint, Column, DateTime, ForeignKey, Integer, T
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from db.models.base import Base
-
+from app.db.base import Base
 
 class Review(Base):
     """

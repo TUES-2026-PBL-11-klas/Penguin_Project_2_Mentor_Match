@@ -3,8 +3,10 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from db.models import MentorSubject, Review, Subject, User
-from db.models import Session as SessionModel
+from app.db.models.user import User
+from app.db.models.subject import Subject, MentorSubject
+from app.db.models.review import Review
+from app.db.models.session import Session as SessionModel
 
 
 class UserRepository:
@@ -43,7 +45,7 @@ class UserRepository:
         subject_id: Optional[int] = None,
     ) -> List[User]:
         """
-        Filtered mentor search — supports name and subject filters.
+        Filtered mentor search.
         Uses list comprehension + filter() (curriculum requirement).
         """
         query = self._db.query(User).filter(User.role.in_(["mentor", "both"]))
@@ -82,7 +84,7 @@ class UserRepository:
         )
 
     def get_average_rating(self, mentor_id: UUID) -> float:
-        """Compute mentor's average rating from all their completed session reviews."""
+        """Compute mentor's average rating from all their reviews."""
         ratings = (
             self._db.query(Review.rating)
             .join(SessionModel, Review.session_id == SessionModel.id)

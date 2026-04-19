@@ -19,11 +19,11 @@ class UnauthorizedSessionActionException(Exception):
 
 
 class InvalidSessionStatusTransitionException(Exception):
-    """Raised when an invalid status transition is attempted (e.g. confirmed → pending)."""
+    """Raised when an invalid status transition is attempted."""
 
 
 class MentorUnavailableException(Exception):
     """
     Raised when a student tries to book during a mentor-marked unavailable slot.
-    The frontend shows: 'The mentor is unavailable at the selected time.'
+    Frontend shows: 'The mentor is unavailable at the selected time.'
     """

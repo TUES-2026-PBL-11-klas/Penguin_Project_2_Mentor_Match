@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 from uuid import UUID
 
-from db.models import User
+from app.db.models.user import User
 
 
 # ---------------------------------------------------------------------------
@@ -20,7 +20,7 @@ class MentorMatchStrategy(ABC):
 
     @abstractmethod
     def match(self, mentors: List[User], context: Dict) -> List[User]:
-        """Filter and/or sort the mentor list. context carries search params."""
+        """Filter and/or sort the mentor list."""
         ...
 
 
@@ -29,7 +29,7 @@ class MentorMatchStrategy(ABC):
 # ---------------------------------------------------------------------------
 
 class RatingBasedStrategy(MentorMatchStrategy):
-    """Sort mentors by average rating (descending). Used when no subject filter."""
+    """Sort mentors by average rating descending. Default strategy."""
 
     def match(self, mentors: List[User], context: Dict) -> List[User]:
         avg_ratings: Dict[UUID, float] = context.get("avg_ratings", {})
@@ -41,7 +41,7 @@ class RatingBasedStrategy(MentorMatchStrategy):
 
 
 class SubjectFilterStrategy(MentorMatchStrategy):
-    """Filter mentors to those teaching the requested subject, then sort by rating."""
+    """Filter to mentors teaching the requested subject, then sort by rating."""
 
     def match(self, mentors: List[User], context: Dict) -> List[User]:
         subject_id: Optional[int] = context.get("subject_id")
@@ -61,10 +61,7 @@ class SubjectFilterStrategy(MentorMatchStrategy):
 
 
 class GradeProximityStrategy(MentorMatchStrategy):
-    """
-    Prefer mentors in the same or higher grade than the student.
-    Within each group, sort by rating.
-    """
+    """Prefer mentors in same or higher grade than the student."""
 
     def match(self, mentors: List[User], context: Dict) -> List[User]:
         student_grade: int = context.get("student_grade", 8)
@@ -87,29 +84,23 @@ class GradeProximityStrategy(MentorMatchStrategy):
 class MentorMatcher:
     """
     Strategy Pattern context.
-    Holds a reference to a MentorMatchStrategy and delegates to it.
 
     SOLID - DIP:
     # DIP: Depends on MentorMatchStrategy abstraction, not any concrete class.
     """
 
     def __init__(self, strategy: MentorMatchStrategy) -> None:
-        self._strategy = strategy  # Encapsulation: strategy is private
+        self._strategy = strategy
 
     def set_strategy(self, strategy: MentorMatchStrategy) -> None:
-        """Swap strategy at runtime without changing any client code."""
         self._strategy = strategy
 
     def match(self, mentors: List[User], context: Dict) -> List[User]:
         return self._strategy.match(mentors, context)
 
 
-# ---------------------------------------------------------------------------
-# Factory helper
-# ---------------------------------------------------------------------------
-
 def build_matcher(subject_id: Optional[int] = None) -> MentorMatcher:
-    """Choose the right strategy based on search parameters."""
+    """Factory: choose the right strategy based on search parameters."""
     if subject_id is not None:
         return MentorMatcher(SubjectFilterStrategy())
     return MentorMatcher(RatingBasedStrategy())
