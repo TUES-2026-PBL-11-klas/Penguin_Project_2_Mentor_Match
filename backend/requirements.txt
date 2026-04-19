@@ -10,3 +10,5 @@ psycopg2-binary
 flask-cors
 pywebpush
 prometheus-flask-exporter
+pre-commit
+flake8
