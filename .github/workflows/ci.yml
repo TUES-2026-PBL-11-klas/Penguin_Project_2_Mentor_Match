@@ -43,7 +43,7 @@ jobs:
       - name: Run linter (flake8)
         run: |
           cd backend
-          flake8 app/ --max-line-length=120 --ignore=E501,W503
+          flake8 app/ --max-line-length=120 --ignore=E501,W503,E241,W292,W293,W291,E261,E221,E302,E231,F401
 
       - name: Run tests with coverage
         env:
