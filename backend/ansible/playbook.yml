@@ -1,0 +1,24 @@
+---
+- name: Deploy MentorMatch
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Build Docker images
+      command: docker compose build
+      args:
+        chdir: "{{ playbook_dir }}/../.."
+
+    - name: Run migrations
+      command: docker compose exec -T backend alembic upgrade head
+      args:
+        chdir: "{{ playbook_dir }}/../.."
+
+    - name: Seed database
+      command: docker compose exec -T backend flask seed
+      args:
+        chdir: "{{ playbook_dir }}/../.."
+
+    - name: Start services
+      command: docker compose up -d
+      args:
+        chdir: "{{ playbook_dir }}/../.."
