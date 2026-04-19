@@ -8,6 +8,15 @@
       args:
         chdir: "{{ playbook_dir }}/../.."
 
+    - name: Start services
+      command: docker compose up -d
+      args:
+        chdir: "{{ playbook_dir }}/../.."
+
+    - name: Wait for database to be ready
+      pause:
+        seconds: 5
+
     - name: Run migrations
       command: docker compose exec -T backend alembic upgrade head
       args:
@@ -18,7 +27,6 @@
       args:
         chdir: "{{ playbook_dir }}/../.."
 
-    - name: Start services
-      command: docker compose up -d
-      args:
-        chdir: "{{ playbook_dir }}/../.."
+    - name: Deployment complete
+      debug:
+        msg: "MentorMatch deployed at http://localhost:5000"
