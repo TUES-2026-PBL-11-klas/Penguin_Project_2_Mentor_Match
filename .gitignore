@@ -2,3 +2,7 @@
 __pycache__/
 node_modules/
 *.pyc
+agenttask.md
+requirements.md
+MentorMatch.md
+.agents/workflows/project.md

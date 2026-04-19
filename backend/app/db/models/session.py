@@ -1,62 +1,55 @@
+"""
+db/models/session.py — Session model.
+Status state machine: pending → confirmed → completed (or declined/cancelled).
+"""
+
+import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
-from app.db.base import Base
-from app.db.models.common import TimestampMixin
-
-if TYPE_CHECKING:
-    from app.db.models.mentor_profile import MentorProfile
-    from app.db.models.notification import Notification
-    from app.db.models.review import Review
-    from app.db.models.subject import Subject
-    from app.db.models.user import User
-
-session_status_enum = Enum(
-    "pending",
-    "confirmed",
-    "completed",
-    "cancelled",
-    name="session_status",
-)
+from db.models.base import Base
 
 
-class Session(TimestampMixin, Base):
+class Session(Base):
+    """
+    A booked mentoring session between a mentor and a student.
+    Status transitions are enforced by sessions/state_machine.py.
+    """
     __tablename__ = "sessions"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    mentor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    mentor_profile_id: Mapped[int | None] = mapped_column(
-        ForeignKey("mentor_profiles.id", ondelete="CASCADE")
-    )
-    mentee_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
-    student_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id", ondelete="RESTRICT"), nullable=False)
-    scheduled_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    duration_minutes: Mapped[int | None] = mapped_column(Integer)
-    status: Mapped[str] = mapped_column(session_status_enum, nullable=False, server_default="pending")
-    meeting_link: Mapped[str | None] = mapped_column(String(255))
-    notes: Mapped[str | None] = mapped_column(Text)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    mentor_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    mentee_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    subject_id = Column(Integer, ForeignKey("subjects.id"), nullable=False)
 
-    mentor: Mapped["User"] = relationship(
-        "User", back_populates="mentor_sessions", foreign_keys=[mentor_id]
+    scheduled_at = Column(DateTime, nullable=False)   # session start datetime
+    end_at = Column(DateTime, nullable=False)          # session end datetime
+    duration_minutes = Column(Integer, nullable=False)
+
+    status = Column(
+        Enum(
+            "pending",
+            "confirmed",
+            "completed",
+            "declined",
+            "cancelled",
+            name="session_status_enum",
+        ),
+        nullable=False,
+        default="pending",
     )
-    student: Mapped["User"] = relationship(
-        "User", back_populates="student_sessions", foreign_keys=[student_id]
-    )
-    mentor_profile: Mapped["MentorProfile | None"] = relationship(
-        "MentorProfile",
-        back_populates="sessions",
-        foreign_keys=[mentor_profile_id],
-    )
-    subject: Mapped["Subject"] = relationship("Subject", back_populates="sessions")
-    review: Mapped["Review | None"] = relationship(
-        "Review", back_populates="session", uselist=False
-    )
-    notifications: Mapped[list["Notification"]] = relationship(
-        "Notification",
-        back_populates="session",
-        cascade="all, delete-orphan",
-    )
+
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    mentor = relationship("User", foreign_keys=[mentor_id], back_populates="sessions_as_mentor")
+    mentee = relationship("User", foreign_keys=[mentee_id], back_populates="sessions_as_mentee")
+    subject = relationship("Subject", back_populates="sessions")
+    review = relationship("Review", back_populates="session", uselist=False)
+    notifications = relationship("Notification", back_populates="session")
+
+    def __repr__(self) -> str:
+        return f"<Session {self.id} status={self.status}>"

@@ -1,86 +1,106 @@
-from typing import TYPE_CHECKING
+"""
+db/models/user.py — User model.
+A user can be a student, mentor, or both.
+"""
 
-from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String, Table, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+import uuid
+from datetime import datetime
 
-from app.db.base import Base
-from app.db.models.common import TimestampMixin
+from sqlalchemy import CheckConstraint, Column, DateTime, Enum, Integer, String, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
-if TYPE_CHECKING:
-    from app.db.models.availability import Availability
-    from app.db.models.mentor_profile import MentorProfile
-    from app.db.models.notification import Notification
-    from app.db.models.review import Review
-    from app.db.models.session import Session
-    from app.db.models.subject import Subject
-
-user_role_enum = Enum("mentor", "student", name="user_role")
+from db.models.base import Base
 
 
-mentor_subjects = Table(
-    "mentor_subjects",
-    Base.metadata,
-    Column("mentor_id", ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
-    Column("subject_id", ForeignKey("subjects.id", ondelete="CASCADE"), primary_key=True),
-    Column("grade_level", Integer, nullable=True),
-    UniqueConstraint("mentor_id", "subject_id", name="uq_mentor_subject"),
-)
-
-
-class User(TimestampMixin, Base):
+class User(Base):
+    """
+    Central user table. A user can be a student, mentor, or both.
+    OOP: encapsulates all identity + role data.
+    """
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    first_name: Mapped[str] = mapped_column(String(80), nullable=False)
-    last_name: Mapped[str] = mapped_column(String(80), nullable=False)
-    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    role: Mapped[str] = mapped_column(user_role_enum, nullable=False)
-    profile_picture: Mapped[str | None] = mapped_column(String(255))
-    grade_level: Mapped[int | None] = mapped_column(Integer)
-    bio: Mapped[str | None] = mapped_column(String(500))
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)
+    first_name = Column(String(100), nullable=False)
+    last_name = Column(String(100), nullable=False)
 
-    subjects: Mapped[list["Subject"]] = relationship(
-        "Subject",
-        secondary=mentor_subjects,
-        back_populates="mentors",
-        overlaps="mentor_links,subject",
+    # School-specific fields (from Mentor_Match_Logic)
+    grade = Column(
+        Integer,
+        CheckConstraint("grade >= 8 AND grade <= 12"),
+        nullable=False,
     )
-    mentor_availabilities: Mapped[list["Availability"]] = relationship(
-        "Availability",
-        back_populates="mentor",
-        cascade="all, delete-orphan",
-        foreign_keys="Availability.mentor_id",
+    class_letter = Column(
+        String(1),
+        CheckConstraint("class_letter IN ('A','B','C','D','E','F','G')"),
+        nullable=False,
     )
-    mentor_sessions: Mapped[list["Session"]] = relationship(
+
+    # Role: student | mentor | both
+    role = Column(
+        Enum("student", "mentor", "both", name="user_role_enum"),
+        nullable=False,
+        default="student",
+    )
+
+    profile_picture = Column(String(500), nullable=True)
+    bio = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
+
+    # Relationships (string references avoid circular imports)
+    mentor_subjects = relationship(
+        "MentorSubject", back_populates="mentor", cascade="all, delete-orphan"
+    )
+    availabilities = relationship(
+        "Availability", back_populates="mentor", cascade="all, delete-orphan"
+    )
+    unavailable_slots = relationship(
+        "UnavailableSlot", back_populates="mentor", cascade="all, delete-orphan"
+    )
+    sessions_as_mentor = relationship(
         "Session",
-        back_populates="mentor",
         foreign_keys="Session.mentor_id",
-    )
-    student_sessions: Mapped[list["Session"]] = relationship(
-        "Session",
-        back_populates="student",
-        foreign_keys="Session.student_id",
-    )
-    reviews_written: Mapped[list["Review"]] = relationship(
-        "Review",
-        back_populates="student",
-        foreign_keys="Review.student_id",
-    )
-    reviews_received: Mapped[list["Review"]] = relationship(
-        "Review",
         back_populates="mentor",
-        foreign_keys="Review.mentor_id",
     )
-    mentor_profile: Mapped["MentorProfile | None"] = relationship(
-        "MentorProfile",
+    sessions_as_mentee = relationship(
+        "Session",
+        foreign_keys="Session.mentee_id",
+        back_populates="mentee",
+    )
+    reviews_given = relationship(
+        "Review", foreign_keys="Review.reviewer_id", back_populates="reviewer"
+    )
+<<<<<<< HEAD
+    reviews_received = relationship(
+        "Review", foreign_keys="Review.reviewed_user_id", back_populates="reviewed_user"
+    )
+    notifications = relationship(
+        "Notification", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    @property
+    def is_mentor(self) -> bool:
+        """Encapsulation: hide role string comparison behind a clean property."""
+        return self.role in ("mentor", "both")
+
+    @property
+    def is_student(self) -> bool:
+        return self.role in ("student", "both")
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
+    def __repr__(self) -> str:
+        return f"<User {self.email} role={self.role}>"
+    push_subscriptions: Mapped[list["PushSubscription"]] = relationship(
+        "PushSubscription",
         back_populates="user",
-        uselist=False,
         cascade="all, delete-orphan",
     )
-    notifications: Mapped[list["Notification"]] = relationship(
-        "Notification",
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
+>>>>>>> 37675f1df109c6ef9a597e725ead05bbf9f09f88

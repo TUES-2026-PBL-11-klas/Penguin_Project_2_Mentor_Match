@@ -6,3 +6,4 @@ pytest
 apscheduler
 psycopg2-binary
 flask-cors
+pywebpush

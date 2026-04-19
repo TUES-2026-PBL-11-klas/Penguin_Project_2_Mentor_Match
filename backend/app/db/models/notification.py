@@ -1,28 +1,52 @@
-from datetime import datetime
-from typing import TYPE_CHECKING
+"""
+db/models/notification.py — Notification model.
+In-app notifications triggered by session lifecycle events.
+"""
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+import uuid
 
-from app.db.base import Base
-from app.db.models.common import TimestampMixin
+from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
-if TYPE_CHECKING:
-    from app.db.models.session import Session
-    from app.db.models.user import User
+from db.models.base import Base
 
 
-class Notification(TimestampMixin, Base):
+class Notification(Base):
+    """
+    In-app notification for a user.
+
+    Types:
+      - new_request:        mentor receives when a student books a session
+      - session_confirmed:  student receives when mentor accepts
+      - session_declined:   student receives when mentor declines
+      - session_reminder:   sent the day before the session starts
+      - rate_session:       sent to student 10 minutes after session ends
+    """
     __tablename__ = "notifications"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    session_id: Mapped[int | None] = mapped_column(ForeignKey("sessions.id", ondelete="CASCADE"))
-    type: Mapped[str] = mapped_column(String(50), nullable=False)
-    message: Mapped[str] = mapped_column(Text, nullable=False)
-    is_read: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
-    scheduled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    session_id = Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=True)
 
-    user: Mapped["User"] = relationship("User", back_populates="notifications")
-    session: Mapped["Session | None"] = relationship("Session", back_populates="notifications")
+    type = Column(
+        Enum(
+            "new_request",
+            "session_confirmed",
+            "session_declined",
+            "session_reminder",
+            "rate_session",
+            name="notification_type_enum",
+        ),
+        nullable=False,
+    )
+    message = Column(String(500), nullable=False)
+    is_read = Column(Boolean, default=False, nullable=False)
+    scheduled_at = Column(DateTime, nullable=True)  # when to send (for scheduled notifications)
+    sent_at = Column(DateTime, nullable=True)
+
+    user = relationship("User", back_populates="notifications")
+    session = relationship("Session", back_populates="notifications")
+
+    def __repr__(self) -> str:
+        return f"<Notification user={self.user_id} type={self.type} read={self.is_read}>"

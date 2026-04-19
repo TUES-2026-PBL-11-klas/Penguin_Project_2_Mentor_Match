@@ -1,39 +1,46 @@
-from typing import TYPE_CHECKING
+"""
+db/models/review.py — Review model.
+A student leaves a review after a completed session (rating 0-5).
+"""
 
-from sqlalchemy import CheckConstraint, ForeignKey, Integer, Text
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+import uuid
+from datetime import datetime
 
-from app.db.base import Base
-from app.db.models.common import TimestampMixin
+from sqlalchemy import CheckConstraint, Column, DateTime, ForeignKey, Integer, Text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
-if TYPE_CHECKING:
-    from app.db.models.session import Session
-    from app.db.models.user import User
+from db.models.base import Base
 
 
-class Review(TimestampMixin, Base):
+class Review(Base):
+    """
+    Review left by a student after a completed session.
+    rating: 0–5 stars (as specified in Mentor_Match_Logic).
+    One review per session (unique constraint on session_id).
+    """
     __tablename__ = "reviews"
-    __table_args__ = (
-        CheckConstraint("rating >= 1 AND rating <= 5", name="ck_reviews_rating_range"),
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    session_id = Column(
+        UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False, unique=True
+    )
+    reviewer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    reviewed_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    rating = Column(
+        Integer,
+        CheckConstraint("rating >= 0 AND rating <= 5"),
+        nullable=False,
+    )
+    comment = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    session = relationship("Session", back_populates="review")
+    reviewer = relationship("User", foreign_keys=[reviewer_id], back_populates="reviews_given")
+    reviewed_user = relationship(
+        "User", foreign_keys=[reviewed_user_id], back_populates="reviews_received"
     )
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    session_id: Mapped[int] = mapped_column(
-        ForeignKey("sessions.id", ondelete="CASCADE"), unique=True, nullable=False
-    )
-    mentor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    student_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    reviewer_id: Mapped[int | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
-    reviewed_user_id: Mapped[int | None] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE")
-    )
-    rating: Mapped[int] = mapped_column(Integer, nullable=False)
-    comment: Mapped[str | None] = mapped_column(Text)
-
-    session: Mapped["Session"] = relationship("Session", back_populates="review")
-    mentor: Mapped["User"] = relationship(
-        "User", back_populates="reviews_received", foreign_keys=[mentor_id]
-    )
-    student: Mapped["User"] = relationship(
-        "User", back_populates="reviews_written", foreign_keys=[student_id]
-    )
+    def __repr__(self) -> str:
+        return f"<Review session={self.session_id} rating={self.rating}>"

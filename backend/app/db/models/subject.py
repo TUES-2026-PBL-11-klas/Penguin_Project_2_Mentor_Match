@@ -1,38 +1,44 @@
-from typing import TYPE_CHECKING
+"""
+db/models/subject.py — Subject and MentorSubject models.
+Subject: lookup table of school subjects.
+MentorSubject: N:N join between mentors and subjects.
+"""
 
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+import uuid
 
-from app.db.base import Base
-from app.db.models.common import TimestampMixin
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
-if TYPE_CHECKING:
-    from app.db.models.mentor_subject import MentorSubject
-    from app.db.models.session import Session
-    from app.db.models.user import User
+from db.models.base import Base
 
 
-class Subject(TimestampMixin, Base):
+class Subject(Base):
+    """Lookup table for school subjects (e.g. Mathematics, Biology)."""
     __tablename__ = "subjects"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    category: Mapped[str | None] = mapped_column(String(100))
-    description: Mapped[str | None] = mapped_column(String(255))
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100), unique=True, nullable=False)
+    category = Column(String(100), nullable=True)  # e.g. "Science", "Humanities"
 
-    mentors: Mapped[list["User"]] = relationship(
-        "User",
-        secondary="mentor_subjects",
-        back_populates="subjects",
-        overlaps="mentor_links,subject",
-    )
-    sessions: Mapped[list["Session"]] = relationship(
-        "Session",
-        back_populates="subject",
-    )
-    mentor_links: Mapped[list["MentorSubject"]] = relationship(
-        "MentorSubject",
-        back_populates="subject",
-        cascade="all, delete-orphan",
-        overlaps="mentors,subjects",
-    )
+    mentor_subjects = relationship("MentorSubject", back_populates="subject")
+    sessions = relationship("Session", back_populates="subject")
+
+    def __repr__(self) -> str:
+        return f"<Subject {self.name}>"
+
+
+class MentorSubject(Base):
+    """N:N join table — which mentor teaches which subject."""
+    __tablename__ = "mentor_subjects"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    mentor_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    subject_id = Column(Integer, ForeignKey("subjects.id"), nullable=False)
+    grade_level = Column(Integer, nullable=True)  # highest grade the mentor can help with
+
+    mentor = relationship("User", back_populates="mentor_subjects")
+    subject = relationship("Subject", back_populates="mentor_subjects")
+
+    def __repr__(self) -> str:
+        return f"<MentorSubject mentor={self.mentor_id} subject={self.subject_id}>"
