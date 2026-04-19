@@ -7,6 +7,7 @@ from app.db.models.review import Review
 from app.db.models.session import Session, session_status_enum
 from app.db.models.subject import Subject
 from app.db.models.user import User, mentor_subjects, user_role_enum
+from app.db.models.push_subscription import PushSubscription
 
 __all__ = [
     "Availability",
@@ -18,6 +19,7 @@ __all__ = [
     "Session",
     "Subject",
     "User",
+    "PushSubscription",
     "mentor_subjects",
     "session_status_enum",
     "user_role_enum",

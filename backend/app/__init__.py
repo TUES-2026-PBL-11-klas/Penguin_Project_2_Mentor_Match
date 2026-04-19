@@ -15,4 +15,11 @@ def create_app() -> Flask:
     )
     init_db(app)
     register_seed_commands(app)
+    
+    # Register isolated modules
+    from app.reviews.routes import reviews_bp
+    from app.notifications.routes import notifications_bp
+    app.register_blueprint(reviews_bp)
+    app.register_blueprint(notifications_bp)
+
     return app
