@@ -1,124 +1,97 @@
-from datetime import datetime, time, timezone
-
 from flask import Flask
-
-from app.db.models import Availability, Review, Session, Subject, User
+from app.db.models.subject import Subject
 from app.db.session import SessionLocal
 
 
 def register_seed_commands(app: Flask) -> None:
     @app.cli.command("seed")
     def seed_command() -> None:
-        seed_database()
+        seed_subjects()
         print("Seed data inserted.")
 
 
-def seed_database() -> None:
+def seed_subjects() -> None:
     db = SessionLocal()
     try:
-        existing_user = db.query(User).filter_by(email="mentor.math@mentormatch.dev").first()
-        if existing_user:
+        if db.query(Subject).first():
+            print("Subjects already seeded.")
             return
 
-        math = Subject(name="Mathematics", description="Algebra, geometry and exam preparation.")
-        physics = Subject(name="Physics", description="Mechanics and introductory problem solving.")
-        english = Subject(name="English", description="Grammar, writing and conversation practice.")
-        db.add_all([math, physics, english])
-        db.flush()
+        subjects = [
+            # Общообразователни
+            Subject(name="Математика",                              category="Общообразователни"),
+            Subject(name="Математика-РП",                          category="Общообразователни"),
+            Subject(name="Български език и литература",            category="Общообразователни"),
+            Subject(name="Английски език",                         category="Общообразователни"),
+            Subject(name="Руски",                                  category="Общообразователни"),
+            Subject(name="История и цивилизация",                  category="Общообразователни"),
+            Subject(name="География",                              category="Общообразователни"),
+            Subject(name="Философия",                              category="Общообразователни"),
+            Subject(name="Биология",                               category="Общообразователни"),
+            Subject(name="Химия",                                  category="Общообразователни"),
+            Subject(name="Физика",                                 category="Общообразователни"),
+            Subject(name="ВС",                                     category="Общообразователни"),
+            Subject(name="ГО",                                     category="Общообразователни"),
+            Subject(name="Предприемачество",                       category="Общообразователни"),
 
-        mentor_1 = User(
-            first_name="Elena",
-            last_name="Petrova",
-            email="mentor.math@mentormatch.dev",
-            password_hash="seeded-password-hash",
-            role="mentor",
-            bio="Mentor focused on algebra and national exam preparation.",
-        )
-        mentor_2 = User(
-            first_name="Nikola",
-            last_name="Georgiev",
-            email="mentor.physics@mentormatch.dev",
-            password_hash="seeded-password-hash",
-            role="mentor",
-            bio="Physics mentor with strong fundamentals and practical examples.",
-        )
-        student_1 = User(
-            first_name="Maria",
-            last_name="Ivanova",
-            email="student.maria@mentormatch.dev",
-            password_hash="seeded-password-hash",
-            role="student",
-            grade_level=11,
-        )
-        student_2 = User(
-            first_name="Ivan",
-            last_name="Dimitrov",
-            email="student.ivan@mentormatch.dev",
-            password_hash="seeded-password-hash",
-            role="student",
-            grade_level=10,
-        )
+            # 8-ми клас
+            Subject(name="Увод в програмирането (8-ми клас)",     category="8-ми клас"),
 
-        mentor_1.subjects.extend([math, english])
-        mentor_2.subjects.extend([physics, math])
-        db.add_all([mentor_1, mentor_2, student_1, student_2])
-        db.flush()
+            # 9-ти клас
+            Subject(name="Програмиране (9-ти клас)",              category="9-ти клас"),
+            Subject(name="Въведение в скриптовите езици",         category="9-ти клас"),
+            Subject(name="Градивни елементи (9-ти клас)",         category="9-ти клас"),
+            Subject(name="ИТ",                                     category="9-ти клас"),
+            Subject(name="Комп. мрежи",                           category="9-ти клас"),
+            Subject(name="Електротехника",                         category="9-ти клас"),
+            Subject(name="Увод в КМ",                             category="9-ти клас"),
 
-        db.add_all(
-            [
-                Availability(
-                    mentor_id=mentor_1.id,
-                    weekday="Monday",
-                    start_time=time(16, 0),
-                    end_time=time(18, 0),
-                ),
-                Availability(
-                    mentor_id=mentor_1.id,
-                    weekday="Wednesday",
-                    start_time=time(17, 0),
-                    end_time=time(19, 0),
-                ),
-                Availability(
-                    mentor_id=mentor_2.id,
-                    weekday="Tuesday",
-                    start_time=time(15, 30),
-                    end_time=time(18, 30),
-                ),
-            ]
-        )
+            # 10-ти клас
+            Subject(name="Увод в АСД (10-ти клас)",              category="10-ти клас"),
+            Subject(name="Увод в ООП (10-ти клас)",              category="10-ти клас"),
+            Subject(name="Аналогова схемотехника",                category="10-ти клас"),
+            Subject(name="Цифрова схемотехника",                  category="10-ти клас"),
+            Subject(name="Увод ВМКС",                             category="10-ти клас"),
+            Subject(name="Комп. арх. и периф. устр.",             category="10-ти клас"),
+            Subject(name="Увод в КМр",                            category="10-ти клас"),
+            
 
-        completed_session = Session(
-            mentor_id=mentor_1.id,
-            student_id=student_1.id,
-            subject_id=math.id,
-            scheduled_at=datetime(2026, 3, 20, 16, 0, tzinfo=timezone.utc),
-            status="completed",
-            meeting_link="https://meet.example.com/math-session",
-            notes="Focused on quadratic equations.",
-        )
-        upcoming_session = Session(
-            mentor_id=mentor_2.id,
-            student_id=student_2.id,
-            subject_id=physics.id,
-            scheduled_at=datetime(2026, 4, 2, 17, 30, tzinfo=timezone.utc),
-            status="confirmed",
-            meeting_link="https://meet.example.com/physics-session",
-            notes="Kinematics exercises.",
-        )
-        db.add_all([completed_session, upcoming_session])
-        db.flush()
+            # 11-ти клас
 
-        db.add(
-            Review(
-                session_id=completed_session.id,
-                mentor_id=mentor_1.id,
-                student_id=student_1.id,
-                rating=5,
-                comment="Clear explanations and useful homework tips.",
-            )
-        )
+            Subject(name="ОС",                                     category="11-ти клас"),
+            Subject(name="ООП (11-ти клас)",                      category="11-ти клас"),
+            Subject(name="Разработка на софтуер",                 category="11-ти клас"),
+            Subject(name="ЧЕП (11-ти клас)",                     category="11-ти клас"),
+            Subject(name="МОПР",                                   category="11-ти клас"),
+            Subject(name="ВМКС (11-ти клас)",                    category="11-ти клас"),
+            Subject(name="Бази данни",                            category="11-ти клас"),
+            Subject(name="ВОТ",                                    category="11-ти клас"),
+            Subject(name="УССС",                                   category="11-ти клас"),
+            Subject(name="АПЕ",                                    category="11-ти клас"),
+            Subject(name="БОМТ",                                   category="11-ти клас"),
+            Subject(name="МПТ",                                    category="11-ти клас"),
+            Subject(name="Мрежови техн. и протоколи (11-ти клас)",category="11-ти клас"),
+            Subject(name="КТТ",                                    category="11-ти клас"),
+            
+            # 12-ти клас
+            Subject(name="Увод в IoT",                            category="12-ти клас"),
+            Subject(name="ЧЕП (12-ти клас)",                     category="12-ти клас"),
+            Subject(name="Софтуерно инженерство",                 category="12-ти клас"),
+            Subject(name="Мрежови протоколи и технологии (12-ти клас)", category="12-ти клас"),
+            Subject(name="Интернет програмиране",                 category="12-ти клас"),
+            Subject(name="Програмиране на ВМКС (12-ти клас)",    category="12-ти клас"),
+            Subject(name="Приложение с граф. потр. интерфейс",   category="12-ти клас"),
+            Subject(name="Компютърна графика и дизайн",          category="12-ти клас"),
+            Subject(name="Глобални мрежи",                        category="12-ти клас"),
+            Subject(name="ИДКМ",                                   category="12-ти клас"),
+            Subject(name="Мрежова и инф. сигурност",             category="12-ти клас"),
+            Subject(name="Системна администрация",                category="12-ти клас"),
+            Subject(name="ВОТ (12-ти клас)",                     category="12-ти клас"),
+        ]
 
+        db.add_all(subjects)
         db.commit()
+        print(f"Added {len(subjects)} subjects.")
     except Exception:
         db.rollback()
         raise
