@@ -49,6 +49,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mentormatch_test
           JWT_SECRET: test_secret_key_32_characters_long
+          PYTHONPATH: /home/runner/work/Penguin_Project_2_Mentor_Match/Penguin_Project_2_Mentor_Match/backend
         run: |
           cd backend
           pytest tests/ --cov=app --cov-report=term-missing --cov-fail-under=50
