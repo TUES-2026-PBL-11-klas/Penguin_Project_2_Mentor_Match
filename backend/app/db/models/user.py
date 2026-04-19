@@ -75,6 +75,7 @@ class User(Base):
     reviews_given = relationship(
         "Review", foreign_keys="Review.reviewer_id", back_populates="reviewer"
     )
+
     reviews_received = relationship(
         "Review", foreign_keys="Review.reviewed_user_id", back_populates="reviewed_user"
     )
