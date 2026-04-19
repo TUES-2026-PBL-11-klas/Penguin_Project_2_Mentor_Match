@@ -1,8 +1,3 @@
-"""
-db/models/review.py — Review model.
-A student leaves a review after a completed session (rating 0-5).
-"""
-
 import uuid
 from datetime import datetime
 

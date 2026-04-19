@@ -1,8 +1,3 @@
-"""
-db/models/notification.py — Notification model.
-In-app notifications triggered by session lifecycle events.
-"""
-
 import uuid
 
 from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, String

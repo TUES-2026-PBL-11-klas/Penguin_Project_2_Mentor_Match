@@ -1,10 +1,3 @@
-"""
-db/models/availability.py — Availability and UnavailableSlot models.
-
-Availability: recurring weekly time slots when a mentor is free.
-UnavailableSlot: specific date-time ranges a mentor marks as blocked.
-"""
-
 import uuid
 
 from sqlalchemy import Boolean, CheckConstraint, Column, DateTime, ForeignKey, Integer, String, Time

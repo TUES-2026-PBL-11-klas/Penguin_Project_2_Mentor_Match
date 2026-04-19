@@ -1,13 +1,3 @@
-"""
-db/models/__init__.py — Re-exports all models from one place.
-
-Every other file in the project can keep using:
-    from db.models import User, Session, Review, ...
-
-The import order matters here — models with no FK dependencies first,
-then models that reference them, so SQLAlchemy can resolve all relationships.
-"""
-
 from db.base import Base
 from db.models.user import User
 from db.models.subject import Subject, MentorSubject

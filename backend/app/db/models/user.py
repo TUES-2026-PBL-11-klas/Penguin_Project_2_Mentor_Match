@@ -1,8 +1,3 @@
-"""
-db/models/user.py — User model.
-A user can be a student, mentor, or both.
-"""
-
 import uuid
 from datetime import datetime
 

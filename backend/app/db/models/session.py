@@ -1,8 +1,3 @@
-"""
-db/models/session.py — Session model.
-Status state machine: pending → confirmed → completed (or declined/cancelled).
-"""
-
 import uuid
 from datetime import datetime
 

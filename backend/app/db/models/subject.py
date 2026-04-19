@@ -1,9 +1,3 @@
-"""
-db/models/subject.py — Subject and MentorSubject models.
-Subject: lookup table of school subjects.
-MentorSubject: N:N join between mentors and subjects.
-"""
-
 import uuid
 
 from sqlalchemy import Column, ForeignKey, Integer, String
