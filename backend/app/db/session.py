@@ -1,4 +1,5 @@
 import os
+from contextlib import contextmanager
 
 from flask import Flask
 from sqlalchemy import create_engine
@@ -22,6 +23,26 @@ engine = create_engine(get_database_url(), future=True)
 SessionLocal = scoped_session(
     sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
 )
+
+
+@contextmanager
+def get_db():
+    """
+    Context manager for DB sessions — satisfies the curriculum 'with statement' requirement.
+
+    Usage:
+        with get_db() as db:
+            users = db.query(User).all()
+    """
+    db = SessionLocal()
+    try:
+        yield db
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        SessionLocal.remove()
 
 
 def init_db(app: Flask) -> None:

@@ -75,7 +75,6 @@ class User(Base):
     reviews_given = relationship(
         "Review", foreign_keys="Review.reviewer_id", back_populates="reviewer"
     )
-<<<<<<< HEAD
     reviews_received = relationship(
         "Review", foreign_keys="Review.reviewed_user_id", back_populates="reviewed_user"
     )
@@ -98,9 +97,3 @@ class User(Base):
 
     def __repr__(self) -> str:
         return f"<User {self.email} role={self.role}>"
-    push_subscriptions: Mapped[list["PushSubscription"]] = relationship(
-        "PushSubscription",
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
->>>>>>> 37675f1df109c6ef9a597e725ead05bbf9f09f88
