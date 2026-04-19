@@ -4,6 +4,8 @@ from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
+from datetime import datetime
+
 from app.db.base import Base
 
 class Notification(Base):
@@ -38,6 +40,7 @@ class Notification(Base):
     is_read = Column(Boolean, default=False, nullable=False)
     scheduled_at = Column(DateTime, nullable=True)  # when to send (for scheduled notifications)
     sent_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     user = relationship("User", back_populates="notifications")
     session = relationship("Session", back_populates="notifications")

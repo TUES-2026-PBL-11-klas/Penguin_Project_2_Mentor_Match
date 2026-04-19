@@ -1,47 +1,62 @@
-# Reviews routes - Даниел
 from flask import Blueprint, request, jsonify
-from app.db.session import SessionLocal
+from uuid import UUID
+from app.db.session import get_db
+from app.auth.middleware import require_auth
 from app.reviews.service import ReviewService
 from app.common.exceptions import MentorMatchBaseException
+from flask import g
 
 reviews_bp = Blueprint("reviews", __name__, url_prefix="/api/reviews")
 review_service = ReviewService()
 
-@reviews_bp.route("/session/<int:session_id>", methods=["POST"])
-def leave_review(session_id: int):
-    """Endpoint to leave a review for a mentor."""
+
+@reviews_bp.route("/session/<session_id>", methods=["POST"])
+@require_auth
+def leave_review(session_id: str):
+    """Leave a review for a completed session."""
     data = request.get_json() or {}
-    
-    student_id = data.get("student_id")
+
     rating = data.get("rating")
     comment = data.get("comment")
 
-    if not student_id or rating is None:
-        return jsonify({"error": "student_id and rating are required"}), 400
+    if rating is None:
+        return jsonify({"error": "rating is required"}), 400
 
-    db = SessionLocal()
     try:
-        review = review_service.create_review(
-            db=db, 
-            session_id=session_id, 
-            student_id=student_id, 
-            rating=int(rating), 
-            comment=comment
-        )
-        return jsonify({"message": "Review submitted successfully", "review_id": review.id}), 201
-    except MentorMatchBaseException as e:
-        return jsonify({"error": e.message}), e.status_code
-    except ValueError as e:
-        return jsonify({"error": str(e)}), 400
-    except Exception as e:
-        return jsonify({"error": "An unexpected error occurred"}), 500
+        session_uuid = UUID(session_id)
+    except ValueError:
+        return jsonify({"error": "Invalid session ID"}), 400
 
-@reviews_bp.route("/mentor/<int:mentor_id>", methods=["GET"])
-def get_mentor_reviews(mentor_id: int):
-    """Endpoint to fetch aggregate review stats and specific reviews for a mentor."""
-    db = SessionLocal()
+    with get_db() as db:
+        try:
+            review = review_service.create_review(
+                db=db,
+                session_id=session_uuid,
+                student_id=g.current_user_id,
+                rating=int(rating),
+                comment=comment,
+            )
+            return jsonify({"message": "Review submitted successfully", "review_id": str(review.id)}), 201
+        except MentorMatchBaseException as e:
+            return jsonify({"error": e.message}), e.status_code
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+
+@reviews_bp.route("/mentor/<mentor_id>", methods=["GET"])
+@require_auth
+def get_mentor_reviews(mentor_id: str):
+    """Fetch all reviews for a mentor."""
     try:
-        data = review_service.get_mentor_reviews(db=db, mentor_id=mentor_id)
-        return jsonify(data), 200
-    except Exception as e:
-        return jsonify({"error": "An error occurred fetching reviews"}), 500
+        mentor_uuid = UUID(mentor_id)
+    except ValueError:
+        return jsonify({"error": "Invalid mentor ID"}), 400
+
+    with get_db() as db:
+        try:
+            data = review_service.get_mentor_reviews(db=db, mentor_id=mentor_uuid)
+            return jsonify(data), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
