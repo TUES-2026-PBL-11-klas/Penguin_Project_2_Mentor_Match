@@ -1,0 +1,12 @@
+2026-04-19 17:50:29,835 INFO werkzeug — [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.19.0.3:5000
+2026-04-19 17:50:29,836 INFO werkzeug — [33mPress CTRL+C to quit[0m
+2026-04-19 17:50:41,490 INFO werkzeug — 172.19.0.1 - - [19/Apr/2026 17:50:41] "[33mGET /metrics HTTP/1.1[0m" 404 -
+2026-04-19 17:59:23,442 INFO werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.19.0.3:5000
+2026-04-19 17:59:23,443 INFO werkzeug - [33mPress CTRL+C to quit[0m
+2026-04-19 17:59:33,381 INFO werkzeug - 172.19.0.1 - - [19/Apr/2026 17:59:33] "GET /metrics HTTP/1.1" 200 -
