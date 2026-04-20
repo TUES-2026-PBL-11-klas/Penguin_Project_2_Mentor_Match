@@ -1,0 +1,187 @@
+/* =============================================
+   LoginPage.css — MentorMatch Log In Page
+   Matches Figma node 6:32
+   ============================================= */
+
+.login-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+}
+
+/* ── Background ── */
+.login-page__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.login-page__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Frosted glass card ── */
+.login-page__card {
+  position: relative;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 58px;
+  width: 473px;
+  padding: 40px 52px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Title ── */
+.login-page__title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0 0 32px;
+  line-height: normal;
+}
+
+/* ── Form ── */
+.login-page__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Inputs ── */
+.login-page__input {
+  width: 100%;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 7px;
+  padding: 0 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.75);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.login-page__input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 300;
+}
+
+.login-page__input:focus {
+  border-color: #05068a;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Error ── */
+.login-page__error {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #c0392b;
+  text-align: center;
+  margin: 4px 0 0;
+}
+
+/* ── Submit button ── */
+.login-page__submit-btn {
+  width: 100%;
+  height: 54px;
+  margin-top: 8px;
+  background: #05068a;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.login-page__submit-btn:hover:not(:disabled) {
+  background: #0708b0;
+}
+
+.login-page__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Sign up link ── */
+.login-page__signup-link {
+  margin-top: 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: rgba(5, 6, 138, 0.75);
+}
+
+.login-page__signup-btn {
+  background: none;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #05068a;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.login-page__signup-btn:hover {
+  opacity: 0.75;
+}
+
+/* ── Footer logo ── */
+.login-page__footer {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.login-page__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.login-page__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .login-page__card {
+    width: 92vw;
+    padding: 32px 24px 36px;
+    border-radius: 32px;
+  }
+
+  .login-page__title {
+    font-size: 28px;
+  }
+}

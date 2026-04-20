@@ -1,0 +1,308 @@
+/* =============================================
+   MentorReviewsPage.css
+   Reviews list for a specific mentor
+   Matches Figma node 11:564
+   ============================================= */
+
+.mentor-reviews-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+  padding: 40px 0 60px;
+  box-sizing: border-box;
+}
+
+/* ── Background ── */
+.mentor-reviews-page__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mentor-reviews-page__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Outer card ── */
+.mentor-reviews-page__outer-card {
+  position: relative;
+  z-index: 10;
+  width: min(1267px, 94vw);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 58px;
+  padding: 34px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Title bar (pill) ── */
+.mentor-reviews-page__title-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 352px;
+  padding: 0 28px;
+  height: 86px;
+  box-sizing: border-box;
+}
+
+/* Back button */
+.mentor-reviews-page__back-btn {
+  background: none;
+  border: none;
+  font-size: 40px;
+  color: #4d5cd0;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.mentor-reviews-page__back-btn:hover {
+  opacity: 0.6;
+}
+
+/* Title text */
+.mentor-reviews-page__title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #4d5cd0;
+  margin: 0;
+  line-height: normal;
+  flex: 1;
+}
+
+/* Average badge */
+.mentor-reviews-page__avg-badge {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: rgba(5, 6, 138, 0.6);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Review list ── */
+.mentor-reviews-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 66vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.mentor-reviews-page__list::-webkit-scrollbar {
+  width: 6px;
+}
+.mentor-reviews-page__list::-webkit-scrollbar-thumb {
+  background: rgba(77, 92, 208, 0.3);
+  border-radius: 3px;
+}
+
+/* ── Status ── */
+.mentor-reviews-page__status {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  color: rgba(5, 6, 138, 0.5);
+  text-align: center;
+  padding: 32px 0;
+  margin: 0;
+}
+
+.mentor-reviews-page__status--error {
+  color: #c0392b;
+}
+
+/* ── Review card ── */
+.mentor-reviews-page__review-card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 22px;
+  padding: 22px 28px 22px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 140px;
+  transition: background 0.18s;
+}
+
+.mentor-reviews-page__review-card:hover {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+/* Top row: label + rating group */
+.mentor-reviews-page__review-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* "Review N" label */
+.mentor-reviews-page__review-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0;
+  line-height: normal;
+}
+
+/* Rating group: text + stars */
+.mentor-reviews-page__review-rating-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.mentor-reviews-page__rating-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 31.54px;
+  color: #4d5cd0;
+  white-space: nowrap;
+}
+
+/* ── Stars ── */
+.mentor-reviews__stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mentor-reviews__star {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.mentor-reviews__star--filled {
+  color: #f5c518;
+}
+
+.mentor-reviews__star--half {
+  color: #f5c518;
+  font-size: 20px;
+}
+
+.mentor-reviews__star--empty {
+  color: rgba(5, 6, 138, 0.15);
+}
+
+/* Comment body */
+.mentor-reviews-page__review-comment {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18.791px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Date */
+.mentor-reviews-page__review-date {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: rgba(5, 6, 138, 0.4);
+  margin: 0;
+  text-align: right;
+}
+
+/* ── Footer ── */
+.mentor-reviews-page__footer {
+  position: relative;
+  z-index: 10;
+  margin-top: 20px;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.mentor-reviews-page__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.mentor-reviews-page__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .mentor-reviews-page__outer-card {
+    padding: 24px 20px 28px;
+    border-radius: 32px;
+  }
+
+  .mentor-reviews-page__title-bar {
+    height: 66px;
+    padding: 0 20px;
+    border-radius: 200px;
+  }
+
+  .mentor-reviews-page__title {
+    font-size: 22px;
+  }
+
+  .mentor-reviews-page__review-label {
+    font-size: 22px;
+  }
+
+  .mentor-reviews-page__rating-text {
+    font-size: 20px;
+  }
+
+  .mentor-reviews__star {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 560px) {
+  .mentor-reviews-page__review-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .mentor-reviews-page__review-label {
+    font-size: 18px;
+  }
+
+  .mentor-reviews-page__rating-text {
+    font-size: 16px;
+  }
+
+  .mentor-reviews-page__title-bar {
+    border-radius: 22px;
+    height: auto;
+    padding: 14px 20px;
+  }
+}

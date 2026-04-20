@@ -1,0 +1,374 @@
+/* =============================================
+   LeaveReviewPage.css
+   Student — Leave a Review for a session
+   Matches Figma node 11:523
+   ============================================= */
+
+.leave-review-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+  padding: 40px 0 60px;
+  box-sizing: border-box;
+}
+
+/* ── Background ── */
+.leave-review-page__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.leave-review-page__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Outer card ── */
+.leave-review-page__outer-card {
+  position: relative;
+  z-index: 10;
+  width: min(1267px, 94vw);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 58px;
+  padding: 40px 64px 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Page title ── */
+.leave-review-page__page-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0;
+  line-height: normal;
+}
+
+/* ── Inner form card ── */
+.leave-review-page__form-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 32px;
+  padding: 40px 46px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+/* ── Session context sentence ── */
+.leave-review-page__context {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 30.534px;
+  color: #4d5cd0;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.leave-review-page__context strong {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+}
+
+/* ── Yes / No row ── */
+.leave-review-page__yn-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.leave-review-page__yn-btn {
+  background: rgba(5, 6, 138, 0.6);
+  border: 1.244px solid rgba(255, 255, 255, 0.5);
+  border-radius: 51.022px;
+  height: 37.333px;
+  width: 112px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 19.628px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leave-review-page__yn-btn:hover {
+  background: rgba(5, 6, 138, 0.8);
+  transform: translateY(-1px);
+}
+
+.leave-review-page__yn-btn--active {
+  background: #05068a;
+  border-color: #ffffff;
+}
+
+/* ── Review form (shown after Yes) ── */
+.leave-review-page__review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeSlideIn 0.25s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Rate row ── */
+.leave-review-page__rate-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.leave-review-page__rate-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 34.326px;
+  color: #4d5cd0;
+  line-height: normal;
+}
+
+/* ── Star buttons ── */
+.leave-review-page__stars {
+  display: flex;
+  gap: 4px;
+}
+
+.leave-review-page__star-btn {
+  background: none;
+  border: none;
+  font-size: 35.1px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px;
+  transition: transform 0.1s;
+}
+
+.leave-review-page__star-btn:hover {
+  transform: scale(1.15);
+}
+
+.leave-review-page__star-btn--filled {
+  color: #f5c518;
+}
+
+.leave-review-page__star-btn--empty {
+  color: rgba(5, 6, 138, 0.2);
+}
+
+/* ── Comment section ── */
+.leave-review-page__comment-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.leave-review-page__comment-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 34.326px;
+  color: #4d5cd0;
+  margin: 0;
+  line-height: normal;
+}
+
+.leave-review-page__comment-optional {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18.791px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0 0 8px;
+}
+
+.leave-review-page__comment-input {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #05068a;
+  border-radius: 23px;
+  padding: 18px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  color: rgba(5, 6, 138, 0.8);
+  outline: none;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  min-height: 169px;
+}
+
+.leave-review-page__comment-input::placeholder {
+  color: rgba(5, 6, 138, 0.3);
+}
+
+.leave-review-page__comment-input:focus {
+  border-color: #4d5cd0;
+}
+
+/* ── Error ── */
+.leave-review-page__error {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #c0392b;
+  margin: 0;
+}
+
+/* ── Submit button ── */
+.leave-review-page__submit-btn {
+  align-self: flex-start;
+  background: #05068a;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 48px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.leave-review-page__submit-btn:hover:not(:disabled) {
+  background: #0708b0;
+}
+
+.leave-review-page__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Success state ── */
+.leave-review-page__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.leave-review-page__success-icon {
+  font-size: 80px;
+  color: #f5c518;
+  margin: 0;
+  line-height: 1;
+}
+
+.leave-review-page__success-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  color: #05068a;
+  margin: 0;
+}
+
+.leave-review-page__success-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0;
+}
+
+.leave-review-page__done-btn {
+  margin-top: 12px;
+  background: #05068a;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 40px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.leave-review-page__done-btn:hover {
+  background: #0708b0;
+}
+
+/* ── Footer ── */
+.leave-review-page__footer {
+  position: relative;
+  z-index: 10;
+  margin-top: 20px;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.leave-review-page__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.leave-review-page__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .leave-review-page__outer-card {
+    padding: 28px 24px 36px;
+    border-radius: 32px;
+  }
+
+  .leave-review-page__form-card {
+    padding: 24px 20px 32px;
+    border-radius: 20px;
+  }
+
+  .leave-review-page__context {
+    font-size: 20px;
+  }
+
+  .leave-review-page__rate-label,
+  .leave-review-page__comment-label {
+    font-size: 24px;
+  }
+
+  .leave-review-page__page-title {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 560px) {
+  .leave-review-page__context {
+    font-size: 16px;
+  }
+
+  .leave-review-page__rate-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .leave-review-page__submit-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+}

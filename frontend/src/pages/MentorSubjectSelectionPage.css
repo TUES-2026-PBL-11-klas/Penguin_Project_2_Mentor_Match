@@ -1,0 +1,267 @@
+/* =============================================
+   MentorSubjectSelectionPage.css
+   "Continue Sign Up" — mentor subject picker
+   Matches Figma node 4:14
+   ============================================= */
+
+.subject-selection-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+  padding: 40px 0;
+  box-sizing: border-box;
+}
+
+/* ── Background ── */
+.subject-selection-page__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.subject-selection-page__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Wide frosted glass card ── */
+.subject-selection-page__card {
+  position: relative;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 58px;
+  width: min(1267px, 92vw);
+  padding: 48px 64px 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-sizing: border-box;
+}
+
+/* ── Title ── */
+.subject-selection-page__title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0 0 4px;
+  line-height: normal;
+}
+
+.subject-selection-page__subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0 0 24px;
+}
+
+/* ── Status text (loading / empty) ── */
+.subject-selection-page__status {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 16px 0;
+}
+
+/* ── Subject list ── */
+.subject-selection-page__list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 56vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Scrollbar styling */
+.subject-selection-page__list::-webkit-scrollbar {
+  width: 6px;
+}
+.subject-selection-page__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.subject-selection-page__list::-webkit-scrollbar-thumb {
+  background: rgba(77, 92, 208, 0.35);
+  border-radius: 3px;
+}
+
+/* ── Category group ── */
+.subject-selection-page__category {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subject-selection-page__category-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(5, 6, 138, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 8px 0 2px;
+  padding-left: 4px;
+}
+
+/* ── Subject row button ── */
+.subject-selection-page__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 86px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 7px;
+  padding: 0 28px 0 24px;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.subject-selection-page__row:hover {
+  background: rgba(255, 255, 255, 0.68);
+  border-color: #4d5cd0;
+}
+
+.subject-selection-page__row--checked {
+  background: rgba(77, 92, 208, 0.08);
+  border-color: #4d5cd0;
+}
+
+/* ── Subject name ── */
+.subject-selection-page__subject-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: #4d5cd0;
+  line-height: normal;
+}
+
+/* ── Custom checkbox ── */
+.subject-selection-page__checkbox {
+  flex-shrink: 0;
+  width: 35px;
+  height: 35px;
+  border: 3.5px solid #4d5cd0;
+  border-radius: 4.375px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.18s;
+}
+
+.subject-selection-page__checkbox--checked {
+  background: rgba(77, 92, 208, 0.1);
+}
+
+/* ── Error message ── */
+.subject-selection-page__error {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #c0392b;
+  margin: 12px 0 0;
+}
+
+/* ── Submit button ── */
+.subject-selection-page__submit-btn {
+  align-self: flex-end;
+  margin-top: 24px;
+  height: 54px;
+  padding: 0 48px;
+  background: #05068a;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.subject-selection-page__submit-btn:hover:not(:disabled) {
+  background: #0708b0;
+}
+
+.subject-selection-page__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Footer logo ── */
+.subject-selection-page__footer {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.subject-selection-page__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.subject-selection-page__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .subject-selection-page__card {
+    padding: 36px 28px 40px;
+    border-radius: 32px;
+  }
+
+  .subject-selection-page__subject-name {
+    font-size: 22px;
+  }
+
+  .subject-selection-page__row {
+    height: 68px;
+  }
+}
+
+@media (max-width: 560px) {
+  .subject-selection-page__title {
+    font-size: 26px;
+  }
+
+  .subject-selection-page__subject-name {
+    font-size: 18px;
+  }
+
+  .subject-selection-page__row {
+    height: 58px;
+    padding: 0 16px;
+  }
+
+  .subject-selection-page__submit-btn {
+    align-self: stretch;
+    padding: 0;
+  }
+}

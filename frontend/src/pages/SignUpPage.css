@@ -1,0 +1,266 @@
+/* =============================================
+   SignUpPage.css — MentorMatch Sign Up Page
+   Matches Figma node 2:20
+   ============================================= */
+
+.signup-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+}
+
+/* ── Background ── */
+.signup-page__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.signup-page__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Frosted glass card ── */
+.signup-page__card {
+  position: relative;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 58px;
+  width: 473px;
+  padding: 40px 52px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Title ── */
+.signup-page__title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0 0 28px;
+  line-height: normal;
+}
+
+/* ── Form ── */
+.signup-page__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Inputs ── */
+.signup-page__input {
+  width: 100%;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 7px;
+  padding: 0 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.75);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.signup-page__input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-weight: 300;
+}
+
+.signup-page__input:focus {
+  border-color: #05068a;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Grade + Class row ── */
+.signup-page__row {
+  display: flex;
+  gap: 12px;
+}
+
+/* ── Select wrapper (for custom arrow) ── */
+.signup-page__select-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.signup-page__select {
+  width: 100%;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 7px;
+  padding: 0 40px 0 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.75);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.signup-page__select:focus {
+  border-color: #05068a;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* show "Grade" / "Class" placeholder in muted style */
+.signup-page__select option[value=""] {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.signup-page__select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* ── Role toggle buttons ── */
+.signup-page__role-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.signup-page__role-btn {
+  flex: 1;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #4d5cd0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.signup-page__role-btn:hover {
+  background: rgba(77, 92, 208, 0.15);
+}
+
+.signup-page__role-btn--active {
+  background: #4d5cd0;
+  color: #ffffff;
+  border-color: #4d5cd0;
+}
+
+/* ── Error message ── */
+.signup-page__error {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #c0392b;
+  text-align: center;
+  margin: 4px 0 0;
+}
+
+/* ── Submit button ── */
+.signup-page__submit-btn {
+  width: 100%;
+  height: 54px;
+  margin-top: 8px;
+  background: #05068a;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.signup-page__submit-btn:hover:not(:disabled) {
+  background: #0708b0;
+}
+
+.signup-page__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Login link ── */
+.signup-page__login-link {
+  margin-top: 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: rgba(5, 6, 138, 0.75);
+}
+
+.signup-page__login-btn {
+  background: none;
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: #05068a;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* ── Footer logo ── */
+.signup-page__footer {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.signup-page__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.signup-page__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .signup-page__card {
+    width: 92vw;
+    padding: 32px 24px 36px;
+    border-radius: 32px;
+  }
+
+  .signup-page__title {
+    font-size: 28px;
+  }
+}

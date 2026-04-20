@@ -1,0 +1,354 @@
+/* =============================================
+   MentorSearchPage.css
+   Student — Search for a Mentor
+   Matches Figma node 11:450
+   ============================================= */
+
+.mentor-search-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+  padding: 40px 0 60px;
+  box-sizing: border-box;
+}
+
+/* ── Background ── */
+.mentor-search-page__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mentor-search-page__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Outer card ── */
+.mentor-search-page__outer-card {
+  position: relative;
+  z-index: 10;
+  width: min(1267px, 94vw);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 58px;
+  padding: 34px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Filter bar (pill shape) ── */
+.mentor-search-page__filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #2d339f;
+  border-radius: 352px;
+  padding: 0 28px;
+  height: 86px;
+  box-sizing: border-box;
+}
+
+/* Name search input */
+.mentor-search-page__name-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: #4d5cd0;
+  min-width: 0;
+}
+
+.mentor-search-page__name-input::placeholder {
+  color: rgba(77, 92, 208, 0.5);
+  font-weight: 400;
+}
+
+/* Divider between name and subject */
+.mentor-search-page__filter-bar::before {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: rgba(45, 51, 159, 0.3);
+  flex-shrink: 0;
+}
+
+/* Subject dropdown wrapper */
+.mentor-search-page__subject-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mentor-search-page__subject-select {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: #4d5cd0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 28px;
+  min-width: 180px;
+}
+
+.mentor-search-page__subject-wrapper::after {
+  content: '▾';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #4d5cd0;
+  pointer-events: none;
+}
+
+/* ── Results list ── */
+.mentor-search-page__results {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 62vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.mentor-search-page__results::-webkit-scrollbar {
+  width: 6px;
+}
+.mentor-search-page__results::-webkit-scrollbar-thumb {
+  background: rgba(77, 92, 208, 0.3);
+  border-radius: 3px;
+}
+
+/* ── Status text ── */
+.mentor-search-page__status {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  color: rgba(5, 6, 138, 0.5);
+  text-align: center;
+  padding: 24px 0;
+  margin: 0;
+}
+
+.mentor-search-page__status--error {
+  color: #c0392b;
+}
+
+/* ── Mentor card ── */
+.mentor-search-page__mentor-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #2d339f;
+  border-radius: 22px;
+  padding: 18px 28px;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  transition: background 0.18s, transform 0.15s, box-shadow 0.15s;
+  gap: 20px;
+  min-height: 140px;
+}
+
+.mentor-search-page__mentor-card:hover {
+  background: rgba(255, 255, 255, 0.88);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 6, 138, 0.12);
+}
+
+.mentor-search-page__mentor-card:active {
+  transform: translateY(0);
+}
+
+/* Left side */
+.mentor-search-page__card-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mentor-search-page__mentor-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0;
+  line-height: normal;
+}
+
+.mentor-search-page__mentor-meta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: rgba(5, 6, 138, 0.5);
+  margin: 0;
+}
+
+.mentor-search-page__mentor-sessions {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18.791px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0;
+}
+
+.mentor-search-page__mentor-sessions strong {
+  color: #05068a;
+  font-family: 'Syne', sans-serif;
+}
+
+/* Right side */
+.mentor-search-page__card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.mentor-search-page__rating-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.206px;
+  color: #4d5cd0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ── Stars ── */
+.mentor-search__stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.mentor-search__star {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.mentor-search__star--filled {
+  color: #f5c518;
+}
+
+/* Half star rendered as smaller golden symbol */
+.mentor-search__star--half {
+  color: #f5c518;
+  font-size: 22px;
+}
+
+.mentor-search__star--empty {
+  color: rgba(5, 6, 138, 0.15);
+}
+
+/* ── Footer ── */
+.mentor-search-page__footer {
+  position: relative;
+  z-index: 10;
+  margin-top: 20px;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.mentor-search-page__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.mentor-search-page__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .mentor-search-page__outer-card {
+    padding: 24px 20px 28px;
+    border-radius: 32px;
+  }
+
+  .mentor-search-page__filter-bar {
+    height: 64px;
+    padding: 0 20px;
+  }
+
+  .mentor-search-page__name-input {
+    font-size: 20px;
+  }
+
+  .mentor-search-page__subject-select {
+    font-size: 18px;
+    min-width: 130px;
+  }
+
+  .mentor-search-page__mentor-name {
+    font-size: 22px;
+  }
+
+  .mentor-search-page__rating-text {
+    font-size: 20px;
+  }
+
+  .mentor-search__star {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 560px) {
+  .mentor-search-page__mentor-card {
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: unset;
+    padding: 16px 18px;
+  }
+
+  .mentor-search-page__card-right {
+    align-items: flex-start;
+  }
+
+  .mentor-search-page__filter-bar {
+    flex-direction: column;
+    border-radius: 22px;
+    height: auto;
+    padding: 16px 20px;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .mentor-search-page__filter-bar::before {
+    display: none;
+  }
+
+  .mentor-search-page__name-input,
+  .mentor-search-page__subject-select {
+    font-size: 16px;
+    width: 100%;
+  }
+}

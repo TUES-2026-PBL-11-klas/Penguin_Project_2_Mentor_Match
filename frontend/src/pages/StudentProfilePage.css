@@ -1,0 +1,346 @@
+/* =============================================
+   StudentProfilePage.css
+   Student Profile Dashboard
+   Matches Figma node 6:67
+   ============================================= */
+
+.student-profile-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+  padding: 40px 0 60px;
+  box-sizing: border-box;
+}
+
+/* ── Background ── */
+.student-profile-page__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.student-profile-page__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Loading / error state ── */
+.student-profile-page__loading {
+  position: relative;
+  z-index: 10;
+  color: #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+}
+
+/* ── Outer card (holds both inner cards) ── */
+.student-profile-page__outer-card {
+  position: relative;
+  z-index: 10;
+  width: min(1267px, 94vw);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 58px;
+  padding: 34px 34px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Info card (top inner card) ── */
+.student-profile-page__info-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 44px;
+  padding: 22px 36px 22px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.student-profile-page__info-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Name + role */
+.student-profile-page__name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0;
+  line-height: normal;
+}
+
+.student-profile-page__role-label {
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+}
+
+/* Class */
+.student-profile-page__class {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 30.144px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0;
+  line-height: normal;
+}
+
+/* Email */
+.student-profile-page__email {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  font-size: 18.791px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0;
+  line-height: normal;
+}
+
+/* Total sessions */
+.student-profile-page__sessions {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 26.404px;
+  color: #4d5cd0;
+  margin: 4px 0 0;
+  line-height: normal;
+}
+
+.student-profile-page__sessions strong {
+  color: #05068a;
+}
+
+/* Add role button */
+.student-profile-page__add-role-btn {
+  flex-shrink: 0;
+  background: #595fb4;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14.485px;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  height: 33px;
+  display: flex;
+  align-items: center;
+}
+
+.student-profile-page__add-role-btn:hover {
+  background: #4d5cd0;
+}
+
+/* ── Calendar card (bottom inner card) ── */
+.student-profile-page__calendar-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 44px;
+  padding: 28px 36px 36px;
+  box-sizing: border-box;
+}
+
+/* Calendar header row */
+.student-profile-page__cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.student-profile-page__cal-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0;
+  min-width: 280px;
+  text-align: center;
+}
+
+.student-profile-page__cal-nav {
+  background: none;
+  border: none;
+  font-size: 40px;
+  color: #4d5cd0;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 8px;
+  transition: opacity 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.student-profile-page__cal-nav:hover {
+  opacity: 0.6;
+}
+
+/* ── Calendar grid ── */
+.student-profile-page__cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-left: 1px solid rgba(77, 92, 208, 0.3);
+  border-top: 1px solid rgba(77, 92, 208, 0.3);
+}
+
+/* Day name header cells */
+.student-profile-page__cal-day-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 22.465px;
+  color: rgba(5, 6, 138, 0.5);
+  text-align: center;
+  padding: 8px 4px 12px;
+  border-right: 1px solid rgba(77, 92, 208, 0.3);
+  border-bottom: 1px solid rgba(77, 92, 208, 0.3);
+  box-sizing: border-box;
+}
+
+/* Day number cells */
+.student-profile-page__cal-day {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 44.007px;
+  color: #05068a;
+  text-align: center;
+  padding: 10px 4px;
+  border-right: 1px solid rgba(77, 92, 208, 0.3);
+  border-bottom: 1px solid rgba(77, 92, 208, 0.3);
+  box-sizing: border-box;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  cursor: default;
+}
+
+.student-profile-page__cal-day--empty {
+  color: transparent;
+  cursor: default;
+}
+
+/* Today highlight */
+.student-profile-page__cal-day--today {
+  background: rgba(77, 92, 208, 0.12);
+  color: #4d5cd0;
+}
+
+/* Days with a confirmed session */
+.student-profile-page__cal-day--session {
+  background: rgba(5, 6, 138, 0.1);
+  position: relative;
+}
+
+.student-profile-page__cal-day--session::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4d5cd0;
+}
+
+/* ── Footer logo ── */
+.student-profile-page__footer {
+  position: relative;
+  z-index: 10;
+  margin-top: 20px;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.student-profile-page__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.student-profile-page__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .student-profile-page__outer-card {
+    padding: 20px;
+    border-radius: 32px;
+  }
+
+  .student-profile-page__info-card,
+  .student-profile-page__calendar-card {
+    border-radius: 24px;
+    padding: 20px;
+  }
+
+  .student-profile-page__name,
+  .student-profile-page__role-label {
+    font-size: 22px;
+  }
+
+  .student-profile-page__cal-title {
+    font-size: 24px;
+    min-width: 180px;
+  }
+
+  .student-profile-page__cal-day {
+    font-size: 24px;
+    min-height: 44px;
+  }
+
+  .student-profile-page__cal-day-name {
+    font-size: 13px;
+    padding: 6px 2px 8px;
+  }
+}
+
+@media (max-width: 560px) {
+  .student-profile-page__name,
+  .student-profile-page__role-label {
+    font-size: 18px;
+  }
+
+  .student-profile-page__cal-day {
+    font-size: 16px;
+    min-height: 36px;
+    padding: 6px 2px;
+  }
+
+  .student-profile-page__cal-day-name {
+    font-size: 10px;
+  }
+
+  .student-profile-page__info-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,164 @@
+/* =============================================
+   HomePage.css — MentorMatch Landing Page
+   Matches Figma node 1:2
+   ============================================= */
+
+.homepage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #0a0f5c; /* fallback behind the gradient */
+}
+
+/* ── Background ── */
+.homepage__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.homepage__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Navbar ── */
+.homepage__navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 48px 98px 0 62px;
+  z-index: 10;
+}
+
+/* ── Search bar ── */
+.homepage__search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1.716px solid rgba(255, 255, 255, 1);
+  border-radius: 125.837px;
+  padding: 4px 16px 4px 10px;
+  width: 162px;
+  height: 25px;
+  cursor: text;
+  transition: border-color 0.2s;
+}
+
+.homepage__search-bar:hover {
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.homepage__search-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  /* the icon asset from Figma is larger; constrain it */
+  object-fit: contain;
+  /* offset to align with search bar visually */
+  margin-left: -8px;
+}
+
+.homepage__search-placeholder {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ── Auth buttons ── */
+.homepage__auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.homepage__auth-btn {
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  line-height: normal;
+  transition: opacity 0.2s;
+}
+
+.homepage__auth-btn:hover {
+  opacity: 0.75;
+}
+
+/* ── Hero text ── */
+.homepage__hero {
+  position: absolute;
+  top: 302px;
+  left: 98px;
+}
+
+.homepage__logo-text {
+  margin: 0;
+  line-height: normal;
+  font-size: 200px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.homepage__logo-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+}
+
+.homepage__logo-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+}
+
+/* ── Responsive fallback ── */
+@media (max-width: 1200px) {
+  .homepage__logo-text {
+    font-size: 130px;
+  }
+
+  .homepage__hero {
+    top: 240px;
+    left: 60px;
+  }
+
+  .homepage__navbar {
+    padding: 36px 60px 0 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .homepage__logo-text {
+    font-size: 72px;
+  }
+
+  .homepage__hero {
+    top: 200px;
+    left: 32px;
+  }
+
+  .homepage__navbar {
+    padding: 24px 32px 0 32px;
+  }
+
+  .homepage__auth-btn {
+    font-size: 20px;
+  }
+}

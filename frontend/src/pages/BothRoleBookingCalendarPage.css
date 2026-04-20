@@ -1,0 +1,496 @@
+/* =============================================
+   BothRoleBookingCalendarPage.css
+   Session booking calendar for mentor+student users
+   Matches Figma node 11:375
+   ============================================= */
+
+.both-booking {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0a0f5c;
+  padding: 40px 0 60px;
+  box-sizing: border-box;
+}
+
+/* ── Background ── */
+.both-booking__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.both-booking__bg-image {
+  position: absolute;
+  width: 120.45%;
+  height: 103.89%;
+  top: -2.05%;
+  left: -10.23%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* ── Outer card ── */
+.both-booking__outer-card {
+  position: relative;
+  z-index: 10;
+  width: min(1267px, 94vw);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 58px;
+  padding: 20px 34px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ── Title bar ── */
+.both-booking__title-bar {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 44px;
+  padding: 14px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.both-booking__title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0;
+  line-height: normal;
+}
+
+.both-booking__mentor-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  color: rgba(5, 6, 138, 0.6);
+  margin: 0;
+}
+
+/* ── Calendar card ── */
+.both-booking__calendar-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid #4d5cd0;
+  border-radius: 44px;
+  padding: 20px 36px 36px;
+  box-sizing: border-box;
+}
+
+/* ── Legend ── */
+.both-booking__legend {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.both-booking__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: rgba(5, 6, 138, 0.7);
+}
+
+.both-booking__legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid #05068a;
+  flex-shrink: 0;
+}
+
+/* Dark blue = mentor sessions (user IS the mentor) */
+.both-booking__legend-dot--mentor {
+  background: rgba(5, 6, 138, 0.4);
+}
+
+/* Lighter purple = student sessions (user IS the student) */
+.both-booking__legend-dot--student {
+  background: rgba(113, 118, 190, 0.4);
+}
+
+/* ── Month navigation ── */
+.both-booking__cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.both-booking__cal-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 35.625px;
+  color: #05068a;
+  margin: 0;
+  min-width: 280px;
+  text-align: center;
+}
+
+.both-booking__cal-nav {
+  background: none;
+  border: none;
+  font-size: 40px;
+  color: #4d5cd0;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 8px;
+  transition: opacity 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.both-booking__cal-nav:hover {
+  opacity: 0.6;
+}
+
+/* ── Status messages ── */
+.both-booking__error-msg {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #c0392b;
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.both-booking__success-msg {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: #1a7a4a;
+  text-align: center;
+  background: rgba(26, 122, 74, 0.1);
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin: 0 0 8px;
+}
+
+/* ── Calendar grid ── */
+.both-booking__cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-left: 1px solid rgba(77, 92, 208, 0.3);
+  border-top: 1px solid rgba(77, 92, 208, 0.3);
+}
+
+/* Day name headers */
+.both-booking__cal-day-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 22.465px;
+  color: rgba(5, 6, 138, 0.5);
+  text-align: center;
+  padding: 8px 4px 12px;
+  border-right: 1px solid rgba(77, 92, 208, 0.3);
+  border-bottom: 1px solid rgba(77, 92, 208, 0.3);
+  box-sizing: border-box;
+}
+
+/* Day cells */
+.both-booking__cal-day {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 44.007px;
+  color: #05068a;
+  text-align: center;
+  padding: 10px 4px;
+  border-right: 1px solid rgba(77, 92, 208, 0.3);
+  border-bottom: 1px solid rgba(77, 92, 208, 0.3);
+  box-sizing: border-box;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  position: relative;
+  user-select: none;
+}
+
+.both-booking__cal-day--empty {
+  color: transparent;
+  pointer-events: none;
+}
+
+.both-booking__cal-day--clickable {
+  cursor: pointer;
+}
+
+.both-booking__cal-day--clickable:hover {
+  background: rgba(77, 92, 208, 0.08);
+}
+
+.both-booking__cal-day--today {
+  background: rgba(77, 92, 208, 0.1);
+  color: #4d5cd0;
+}
+
+.both-booking__cal-day--selected {
+  background: rgba(5, 6, 138, 0.5);
+  color: #ffffff;
+}
+
+.both-booking__cal-day--past {
+  color: rgba(5, 6, 138, 0.25);
+  cursor: default;
+}
+
+/* ── Session highlight colours (matching Figma exactly) ── */
+
+/* Dark blue cells — user's mentor sessions */
+.both-booking__cal-day--mentor-session {
+  background: rgba(5, 6, 138, 0.4);
+  border: 1px solid #05068a;
+}
+
+/* Lighter purple cells — user's student sessions */
+.both-booking__cal-day--student-session {
+  background: rgba(113, 118, 190, 0.4);
+  border: 1px solid #05068a;
+}
+
+/* Dual indicator dot — day has BOTH a mentor and student session */
+.both-booking__dual-dot {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4d5cd0;
+  border: 1px solid #ffffff;
+}
+
+/* ── Popup card ── */
+.both-booking__popup {
+  position: absolute;
+  z-index: 100;
+  background: #4d5cd0;
+  border: 1px solid #05068a;
+  border-radius: 11px;
+  padding: 12px 14px 14px;
+  width: 200px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 8px 32px rgba(5, 6, 138, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.both-booking__popup::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #4d5cd0;
+}
+
+.both-booking__popup-subject-label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 17.763px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.both-booking__popup-select {
+  width: 100%;
+  background: rgba(5, 6, 138, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #ffffff;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.both-booking__popup-select option {
+  color: #05068a;
+  background: #ffffff;
+}
+
+.both-booking__popup-date {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14.08px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.both-booking__popup-time-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.both-booking__popup-time-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14.08px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.both-booking__popup-time-input {
+  background: rgba(5, 6, 138, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #ffffff;
+  outline: none;
+  width: 80px;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+.both-booking__popup-notes {
+  width: 100%;
+  background: rgba(5, 6, 138, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: #ffffff;
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.both-booking__popup-notes::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.both-booking__popup-error {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  color: #ffbaba;
+  margin: 0;
+  text-align: center;
+}
+
+.both-booking__popup-reserve-btn {
+  align-self: center;
+  background: rgba(5, 6, 138, 0.4);
+  border: 0.878px solid rgba(255, 255, 255, 0.5);
+  border-radius: 35.989px;
+  padding: 5px 18px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 13.845px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 2px;
+}
+
+.both-booking__popup-reserve-btn:hover:not(:disabled) {
+  background: rgba(5, 6, 138, 0.65);
+}
+
+.both-booking__popup-reserve-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Footer ── */
+.both-booking__footer {
+  position: relative;
+  z-index: 10;
+  margin-top: 20px;
+  white-space: nowrap;
+  font-size: 24.771px;
+  line-height: normal;
+}
+
+.both-booking__footer-bold {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.both-booking__footer-regular {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .both-booking__outer-card {
+    padding: 16px 20px 24px;
+    border-radius: 32px;
+  }
+
+  .both-booking__calendar-card {
+    border-radius: 24px;
+    padding: 16px 12px 24px;
+  }
+
+  .both-booking__title {
+    font-size: 22px;
+  }
+
+  .both-booking__cal-title {
+    font-size: 22px;
+    min-width: 160px;
+  }
+
+  .both-booking__cal-day {
+    font-size: 22px;
+    min-height: 48px;
+  }
+
+  .both-booking__cal-day-name {
+    font-size: 13px;
+    padding: 6px 2px 8px;
+  }
+}
+
+@media (max-width: 560px) {
+  .both-booking__cal-day {
+    font-size: 14px;
+    min-height: 36px;
+    padding: 4px 2px;
+  }
+
+  .both-booking__cal-day-name {
+    font-size: 9px;
+  }
+
+  .both-booking__popup {
+    width: 160px;
+    padding: 10px 10px 12px;
+  }
+
+  .both-booking__legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
