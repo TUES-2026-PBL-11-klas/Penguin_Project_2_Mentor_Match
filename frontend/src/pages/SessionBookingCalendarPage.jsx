@@ -61,8 +61,8 @@ const SessionBookingCalendarPage = () => {
     const fetchData = async () => {
       try {
         const [subjRes, unavailRes] = await Promise.all([
-          fetch('http://localhost:5000/api/auth/subjects', { headers }),
-          fetch(`http://localhost:5000/api/sessions/unavailable?mentor_id=${mentorId}`, { headers }),
+          fetch('/api/auth/subjects', { headers }),
+          fetch(`/api/sessions/unavailable?mentor_id=${mentorId}`, { headers }),
         ]);
         const subjData = subjRes.ok ? await subjRes.json() : [];
         const unavailData = unavailRes.ok ? await unavailRes.json() : [];
@@ -158,7 +158,7 @@ const SessionBookingCalendarPage = () => {
 
     setSubmitting(true);
     try {
-      const res = await fetch('http://localhost:5000/api/sessions/request', {
+      const res = await fetch('/api/sessions/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -339,3 +339,4 @@ const SessionBookingCalendarPage = () => {
 };
 
 export default SessionBookingCalendarPage;
+

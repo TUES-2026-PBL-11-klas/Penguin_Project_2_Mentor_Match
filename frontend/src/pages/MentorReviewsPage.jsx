@@ -45,7 +45,7 @@ const MentorReviewsPage = () => {
     const fetchReviews = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/reviews/mentor/${mentorId}`,
+          `/api/reviews/mentor/${mentorId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (!res.ok) throw new Error('Failed to load reviews.');
@@ -155,3 +155,4 @@ const MentorReviewsPage = () => {
 };
 
 export default MentorReviewsPage;
+

@@ -41,7 +41,7 @@ const MentorSearchPage = () => {
   // Fetch subjects once for the dropdown
   useEffect(() => {
     if (!token) { navigate('/login'); return; }
-    fetch('http://localhost:5000/api/auth/subjects', {
+    fetch('/api/auth/subjects', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
@@ -60,7 +60,7 @@ const MentorSearchPage = () => {
       if (subjectId) params.set('subject_id', subjectId);
 
       const res = await fetch(
-        `http://localhost:5000/api/sessions/mentors/search?${params.toString()}`,
+        `/api/sessions/mentors/search?${params.toString()}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (!res.ok) throw new Error('Failed to load mentors.');
@@ -174,3 +174,4 @@ const MentorSearchPage = () => {
 };
 
 export default MentorSearchPage;
+

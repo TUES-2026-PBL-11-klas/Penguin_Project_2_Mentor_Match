@@ -67,7 +67,7 @@ const GuestRoute = ({ children }) => {
  */
 const ProfileRouter = () => {
   const role = getUserRole();
-  if (role === 'mentor') return <MentorProfilePage />;
+  if (role === 'mentor' || role === 'both') return <MentorProfilePage />;
   return <StudentProfilePage />;
 };
 

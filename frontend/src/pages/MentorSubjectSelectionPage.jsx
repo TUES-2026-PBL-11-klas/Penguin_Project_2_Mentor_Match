@@ -21,7 +21,7 @@ const MentorSubjectSelectionPage = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/auth/subjects');
+        const res = await fetch('/api/auth/subjects');
         const data = await res.json();
         if (!res.ok) throw new Error('Failed to load subjects.');
         setSubjects(data);
@@ -40,7 +40,7 @@ const MentorSubjectSelectionPage = () => {
     );
   };
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
     if (selectedIds.length === 0) {
       setError('Please select at least one subject.');
       return;
@@ -49,20 +49,24 @@ const MentorSubjectSelectionPage = () => {
     setSubmitting(true);
 
     try {
-      // Log in to get a token, then update the profile with subject_ids
-      const loginRes = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const loginData = await loginRes.json();
-      if (!loginRes.ok) throw new Error('Login after registration failed.');
+      // Use existing token if available, otherwise login first
+      let token = localStorage.getItem('token');
 
-      const token = loginData.access_token;
-      localStorage.setItem('token', token);
+      if (!token && email && password) {
+        const loginRes = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const loginData = await loginRes.json();
+        if (!loginRes.ok) throw new Error('Login after registration failed.');
+        token = loginData.access_token;
+        localStorage.setItem('token', token);
+      }
 
-      // Add mentor subjects via add-role endpoint
-      const roleRes = await fetch('http://localhost:5000/api/auth/add-role', {
+      if (!token) throw new Error('Not authenticated.');
+
+      const roleRes = await fetch('/api/auth/add-role', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,10 +77,10 @@ const MentorSubjectSelectionPage = () => {
 
       if (!roleRes.ok) {
         const roleData = await roleRes.json();
-        throw new Error(roleData.message || 'Failed to set subjects.');
+        throw new Error(roleData.error || roleData.message || 'Failed to set subjects.');
       }
 
-      navigate('/');
+      navigate('/profile');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -179,3 +183,4 @@ const MentorSubjectSelectionPage = () => {
 };
 
 export default MentorSubjectSelectionPage;
+

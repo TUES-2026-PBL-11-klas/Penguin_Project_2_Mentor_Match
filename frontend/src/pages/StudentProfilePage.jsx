@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './StudentProfilePage.css';
+import Navbar from '../components/Navbar';
 
 const BG_IMAGE = 'https://www.figma.com/api/mcp/asset/78a80476-c4b9-4de1-907e-b1be62e5dcf1';
 
@@ -46,8 +47,8 @@ const StudentProfilePage = () => {
     const fetchData = async () => {
       try {
         const [profRes, sessRes] = await Promise.all([
-          fetch('http://localhost:5000/api/auth/profile', { headers }),
-          fetch('http://localhost:5000/api/sessions/student/calendar', { headers }),
+          fetch('/api/auth/profile', { headers }),
+          fetch('/api/sessions/student/calendar', { headers }),
         ]);
         if (!profRes.ok) throw new Error('Failed to load profile.');
         const profData = await profRes.json();
@@ -115,6 +116,8 @@ const StudentProfilePage = () => {
       <div className="student-profile-page__bg" aria-hidden="true">
         <img src={BG_IMAGE} alt="" className="student-profile-page__bg-image" />
       </div>
+
+      <Navbar />
 
       <div className="student-profile-page__outer-card">
 
@@ -217,3 +220,4 @@ const StudentProfilePage = () => {
 };
 
 export default StudentProfilePage;
+

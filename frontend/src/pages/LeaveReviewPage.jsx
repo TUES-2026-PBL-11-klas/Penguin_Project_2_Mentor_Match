@@ -49,7 +49,7 @@ const LeaveReviewPage = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/reviews/session/${sessionId}`,
+        `/api/reviews/session/${sessionId}`,
         {
           method: 'POST',
           headers: {
@@ -216,3 +216,4 @@ const LeaveReviewPage = () => {
 };
 
 export default LeaveReviewPage;
+

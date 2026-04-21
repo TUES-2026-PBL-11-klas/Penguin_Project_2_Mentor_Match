@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MentorProfilePage.css';
+import Navbar from '../components/Navbar';
 
 const BG_IMAGE = 'https://www.figma.com/api/mcp/asset/ac149af1-46e1-488c-9826-40e3c006effa';
 
@@ -57,8 +58,8 @@ const MentorProfilePage = () => {
     const fetchData = async () => {
       try {
         const [profRes, sessRes] = await Promise.all([
-          fetch('http://localhost:5000/api/auth/profile', { headers }),
-          fetch('http://localhost:5000/api/sessions/mentor/calendar', { headers }),
+          fetch('/api/auth/profile', { headers }),
+          fetch('/api/sessions/mentor/calendar', { headers }),
         ]);
 
         if (!profRes.ok) throw new Error('Failed to load profile.');
@@ -68,9 +69,9 @@ const MentorProfilePage = () => {
         setSessions(sessData);
 
         // Fetch reviews if we have a mentor profile id
-        if (profData.mentor_profile_id) {
+        if (profData.id) {
           const revRes = await fetch(
-            `http://localhost:5000/api/reviews/mentor/${profData.mentor_profile_id}`,
+            `/api/reviews/mentor/${profData.id}`,
             { headers }
           );
           if (revRes.ok) {
@@ -132,6 +133,8 @@ const MentorProfilePage = () => {
       <div className="mentor-profile-page__bg" aria-hidden="true">
         <img src={BG_IMAGE} alt="" className="mentor-profile-page__bg-image" />
       </div>
+
+      <Navbar />
 
       <div className="mentor-profile-page__outer-card">
 
@@ -224,6 +227,8 @@ const MentorProfilePage = () => {
                     isToday ? 'mentor-profile-page__cal-day--today' : '',
                     hasSession ? 'mentor-profile-page__cal-day--session' : '',
                   ].join(' ')}
+                  onClick={() => day && navigate(`/book/${profile?.id}`)}
+                  style={{ cursor: day ? 'pointer' : 'default' }}
                 >
                   {day || ''}
                 </div>
@@ -266,3 +271,4 @@ const MentorProfilePage = () => {
 };
 
 export default MentorProfilePage;
+
