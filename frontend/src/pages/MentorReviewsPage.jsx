@@ -30,28 +30,38 @@ const MentorReviewsPage = () => {
   const navigate = useNavigate();
   const { mentorId } = useParams();
   const location = useLocation();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   const mentorName = location.state?.mentorName || 'Mentor';
 
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
+  const [eligibleSessions, setEligibleSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (!token) { navigate('/login'); return; }
 
-    const fetchReviews = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch(
-          `/api/reviews/mentor/${mentorId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        if (!res.ok) throw new Error('Failed to load reviews.');
-        const data = await res.json();
+        const headers = { Authorization: `Bearer ${token}` };
+        const [reviewsRes, historyRes] = await Promise.all([
+          fetch(`/api/reviews/mentor/${mentorId}`, { headers }),
+          fetch('/api/sessions/student/history', { headers }),
+        ]);
+        if (!reviewsRes.ok) throw new Error('Failed to load reviews.');
+        const data = await reviewsRes.json();
         setReviews(data.reviews || []);
         setAverageRating(data.average_rating ?? 0);
+
+        if (historyRes.ok) {
+          const history = await historyRes.json();
+          const eligible = (Array.isArray(history) ? history : []).filter(
+            (s) => String(s.mentor_id) === String(mentorId) && s.has_review === false
+          );
+          setEligibleSessions(eligible);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -59,7 +69,7 @@ const MentorReviewsPage = () => {
       }
     };
 
-    fetchReviews();
+    fetchData();
   }, [token, mentorId, navigate]);
 
   const formatDate = (iso) => {
@@ -98,6 +108,21 @@ const MentorReviewsPage = () => {
             </span>
           )}
         </header>
+
+        {/* ── Add Review prompt ── */}
+        {eligibleSessions.length > 0 && (
+          <div className="mentor-reviews-page__add-review-banner">
+            <p className="mentor-reviews-page__add-review-text">
+              You have {eligibleSessions.length} completed session{eligibleSessions.length > 1 ? 's' : ''} with this mentor — leave a review!
+            </p>
+            <button
+              className="mentor-reviews-page__add-review-btn"
+              onClick={() => navigate(`/review/${eligibleSessions[0].id}`)}
+            >
+              Add Review
+            </button>
+          </div>
+        )}
 
         {/* ── Review list ── */}
         <div className="mentor-reviews-page__list">

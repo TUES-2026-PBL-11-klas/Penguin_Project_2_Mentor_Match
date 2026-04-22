@@ -47,4 +47,7 @@ def create_app() -> Flask:
     app.register_blueprint(reviews_bp)
     app.register_blueprint(notifications_bp)
 
+    from app.scheduler import start_scheduler
+    start_scheduler()
+
     return app

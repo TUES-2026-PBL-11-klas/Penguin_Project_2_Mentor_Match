@@ -6,7 +6,7 @@ const BG_IMAGE = 'https://www.figma.com/api/mcp/asset/045f166c-aee5-4149-9025-c8
 const SEARCH_ICON = 'https://www.figma.com/api/mcp/asset/64925700-9ebf-4f4a-8345-93ebaf6839a2';
 
 const getRole = () => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (!token) return null;
   try {
     return JSON.parse(atob(token.split('.')[1])).role;
@@ -21,7 +21,7 @@ const HomePage = () => {
   const isLoggedIn = !!role;
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     window.location.reload();
   };
 

@@ -50,7 +50,7 @@ const handleSubmit = async () => {
 
     try {
       // Use existing token if available, otherwise login first
-      let token = localStorage.getItem('token');
+      let token = sessionStorage.getItem('token');
 
       if (!token && email && password) {
         const loginRes = await fetch('/api/auth/login', {
@@ -61,7 +61,7 @@ const handleSubmit = async () => {
         const loginData = await loginRes.json();
         if (!loginRes.ok) throw new Error('Login after registration failed.');
         token = loginData.access_token;
-        localStorage.setItem('token', token);
+        sessionStorage.setItem('token', token);
       }
 
       if (!token) throw new Error('Not authenticated.');

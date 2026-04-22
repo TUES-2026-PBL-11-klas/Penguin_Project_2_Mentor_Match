@@ -28,7 +28,7 @@ const buildCalendarDays = (year, month) => {
 
 const StudentProfilePage = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   const [profile, setProfile] = useState(null);
   const [sessions, setSessions] = useState([]);

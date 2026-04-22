@@ -30,7 +30,7 @@ const LoginPage = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login failed.');
 
-      localStorage.setItem('token', data.access_token);
+      sessionStorage.setItem('token', data.access_token);
       navigate('/');
     } catch (err) {
       setError(err.message);

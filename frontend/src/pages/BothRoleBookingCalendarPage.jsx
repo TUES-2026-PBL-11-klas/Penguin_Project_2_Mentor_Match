@@ -26,7 +26,7 @@ const BothRoleBookingCalendarPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { mentorId } = useParams();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   const mentorInfo = location.state?.mentor || null;
 

@@ -8,7 +8,7 @@ const LeaveReviewPage = () => {
   const navigate = useNavigate();
   const { sessionId } = useParams();
   const location = useLocation();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   // Session info passed via navigation state
   const sessionInfo = location.state?.session || null;

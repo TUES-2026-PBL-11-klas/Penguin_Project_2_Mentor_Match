@@ -13,12 +13,15 @@ import MentorReviewsPage           from './pages/MentorReviewsPage';     // Figm
 import SessionBookingCalendarPage  from './pages/SessionBookingCalendarPage';  // Figma 9:281
 import BothRoleBookingCalendarPage from './pages/BothRoleBookingCalendarPage'; // Figma 11:375
 import LeaveReviewPage             from './pages/LeaveReviewPage';       // Figma 11:523
+import AvailabilityPage            from './pages/AvailabilityPage';
+import ViewMentorProfilePage       from './pages/ViewMentorProfilePage';
+import SessionsPage                from './pages/SessionsPage';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /** Decode the JWT payload and return it, or null if missing/invalid. */
 const getJwtPayload = () => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   if (!token) return null;
   try {
     return JSON.parse(atob(token.split('.')[1]));
@@ -42,7 +45,7 @@ const getUserRole = () => {
  * The browser back button works normally — navigate() builds history as usual.
  */
 const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   return token ? children : <Navigate to="/login" replace />;
 };
 
@@ -52,7 +55,7 @@ const PrivateRoute = ({ children }) => {
  * bouncing them straight to /profile instead.
  */
 const GuestRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   return token ? <Navigate to="/profile" replace /> : children;
 };
 
@@ -89,7 +92,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
+        
+        <Route path="/availability" element={<PrivateRoute><AvailabilityPage /></PrivateRoute>} />
+        <Route path="/sessions" element={<PrivateRoute><SessionsPage /></PrivateRoute>} />
         {/* ════════════════════════════════════════════════════════════════════
             PUBLIC ROUTES — no login required
             ════════════════════════════════════════════════════════════════ */}
@@ -190,6 +195,18 @@ function App() {
           element={
             <PrivateRoute>
               <MentorSearchPage />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Public mentor profile — accessible by students from search results.
+            Navigate here with:
+              navigate(`/mentor/${mentor.id}`, { state: { mentor } })        */}
+        <Route
+          path="/mentor/:mentorId"
+          element={
+            <PrivateRoute>
+              <ViewMentorProfilePage />
             </PrivateRoute>
           }
         />

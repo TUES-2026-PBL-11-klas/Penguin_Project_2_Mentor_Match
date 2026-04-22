@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './MentorProfilePage.css';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import './MentorProfilePage.css';
 
 const BG_IMAGE = 'https://www.figma.com/api/mcp/asset/ac149af1-46e1-488c-9826-40e3c006effa';
 
@@ -13,7 +13,7 @@ const MONTH_NAMES = [
 
 const buildCalendarDays = (year, month) => {
   const firstDay = new Date(year, month, 1);
-  const startOffset = (firstDay.getDay() + 6) % 7; // Mon=0
+  const startOffset = (firstDay.getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const cells = [];
   for (let i = 0; i < startOffset; i++) cells.push(null);
@@ -22,82 +22,53 @@ const buildCalendarDays = (year, month) => {
   return cells;
 };
 
-const StarRating = ({ rating, max = 5 }) => {
-  return (
-    <div className="mentor-profile__stars" aria-label={`Rating: ${rating} out of ${max}`}>
-      {Array.from({ length: max }, (_, i) => (
-        <span
-          key={i}
-          className={`mentor-profile__star ${i < Math.round(rating) ? 'mentor-profile__star--filled' : 'mentor-profile__star--empty'}`}
-        >
-          ★
-        </span>
-      ))}
-    </div>
-  );
-};
+const StarRating = ({ rating, max = 5 }) => (
+  <div className="mentor-profile__stars" aria-label={`Rating: ${rating} out of ${max}`}>
+    {Array.from({ length: max }, (_, i) => (
+      <span
+        key={i}
+        className={`mentor-profile__star ${i < Math.round(rating) ? 'mentor-profile__star--filled' : 'mentor-profile__star--empty'}`}
+      >
+        ★
+      </span>
+    ))}
+  </div>
+);
 
-const MentorProfilePage = () => {
+const ViewMentorProfilePage = () => {
   const navigate = useNavigate();
+  const { mentorId } = useParams();
+  const location = useLocation();
   const token = sessionStorage.getItem('token');
 
-  const [profile, setProfile] = useState(null);
+  const mentor = location.state?.mentor || null;
+
   const [reviews, setReviews] = useState([]);
-  const [sessions, setSessions] = useState([]);
   const [unavailableSlots, setUnavailableSlots] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   const today = new Date();
   const [calYear, setCalYear] = useState(today.getFullYear());
   const [calMonth, setCalMonth] = useState(today.getMonth());
 
+  const viewerId = (() => {
+    try { return String(JSON.parse(atob(token.split('.')[1])).sub); }
+    catch { return null; }
+  })();
+  const isOwnProfile = viewerId === String(mentorId);
+
   useEffect(() => {
     if (!token) { navigate('/login'); return; }
     const headers = { Authorization: `Bearer ${token}` };
-
-    const fetchData = async () => {
-      try {
-        const [profRes, sessRes, unavailRes] = await Promise.all([
-          fetch('/api/auth/profile', { headers }),
-          fetch('/api/sessions/mentor/calendar', { headers }),
-          fetch('/api/sessions/unavailable', { headers }),
-        ]);
-
-        if (!profRes.ok) throw new Error('Failed to load profile.');
-        const profData = await profRes.json();
-        const sessData = sessRes.ok ? await sessRes.json() : [];
-        const unavailData = unavailRes.ok ? await unavailRes.json() : [];
-        setProfile(profData);
-        setSessions(sessData);
-        setUnavailableSlots(unavailData);
-
-        // Fetch reviews if we have a mentor profile id
-        if (profData.id) {
-          const revRes = await fetch(
-            `/api/reviews/mentor/${profData.id}`,
-            { headers }
-          );
-          if (revRes.ok) {
-            const revData = await revRes.json();
-            setReviews(revData.reviews || []);
-          }
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [token, navigate]);
-
-  const sessionDays = new Set(
-    sessions
-      .map((s) => new Date(s.scheduled_at))
-      .filter((d) => d.getFullYear() === calYear && d.getMonth() === calMonth)
-      .map((d) => d.getDate())
-  );
+    Promise.all([
+      fetch(`/api/sessions/unavailable?mentor_id=${mentorId}`, { headers }),
+      fetch(`/api/reviews/mentor/${mentorId}`, { headers }),
+    ]).then(async ([unavailRes, reviewRes]) => {
+      setUnavailableSlots(unavailRes.ok ? await unavailRes.json() : []);
+      const revData = reviewRes.ok ? await reviewRes.json() : {};
+      setReviews(revData.reviews || []);
+    }).catch(() => {}).finally(() => setLoading(false));
+  }, [mentorId, token, navigate]);
 
   const unavailDays = new Set(
     unavailableSlots
@@ -117,30 +88,46 @@ const MentorProfilePage = () => {
     else setCalMonth((m) => m + 1);
   };
 
-  const isBoth = profile?.role === 'both';
-  const averageRating = profile?.average_rating ?? 0;
+  const handleCalendarClick = (day) => {
+    if (!day) return;
+    if (isOwnProfile) {
+      navigate('/availability');
+    } else {
+      navigate(`/book/${mentorId}`, { state: { mentor } });
+    }
+  };
+
+  const averageRating = mentor?.average_rating ?? 0;
 
   if (loading) return (
     <main className="mentor-profile-page">
       <div className="mentor-profile-page__bg" aria-hidden="true">
         <img src={BG_IMAGE} alt="" className="mentor-profile-page__bg-image" />
       </div>
-      <p className="mentor-profile-page__loading">Loading profile...</p>
+      <p className="mentor-profile-page__loading">Loading...</p>
     </main>
   );
 
-  if (error) return (
+  if (!mentor) return (
     <main className="mentor-profile-page">
       <div className="mentor-profile-page__bg" aria-hidden="true">
         <img src={BG_IMAGE} alt="" className="mentor-profile-page__bg-image" />
       </div>
-      <p className="mentor-profile-page__loading">{error}</p>
+      <Navbar />
+      <p className="mentor-profile-page__loading">
+        Mentor not found.{' '}
+        <button
+          onClick={() => navigate('/search')}
+          style={{ background: 'none', border: 'none', color: '#fff', textDecoration: 'underline', cursor: 'pointer', fontSize: 'inherit' }}
+        >
+          Back to search
+        </button>
+      </p>
     </main>
   );
 
   return (
     <main className="mentor-profile-page">
-      {/* Background */}
       <div className="mentor-profile-page__bg" aria-hidden="true">
         <img src={BG_IMAGE} alt="" className="mentor-profile-page__bg-image" />
       </div>
@@ -153,34 +140,22 @@ const MentorProfilePage = () => {
         <section className="mentor-profile-page__info-card">
           <div className="mentor-profile-page__info-left">
             <h1 className="mentor-profile-page__name">
-              {profile?.first_name} {profile?.last_name}
+              {mentor.first_name} {mentor.last_name}
               <span className="mentor-profile-page__role-label"> — Mentor</span>
             </h1>
             <p className="mentor-profile-page__class">
-              Grade {profile?.grade}{profile?.class_letter}
+              Grade {mentor.grade}{mentor.class_letter}
             </p>
-            <p className="mentor-profile-page__email">{profile?.email}</p>
-
-            {/* Subjects */}
-            {profile?.subjects?.length > 0 && (
+            {mentor.subjects?.length > 0 && (
               <p className="mentor-profile-page__subjects">
-                {profile.subjects.map((s) => s.name).join(' · ')}
+                {mentor.subjects.map((s) => s.name).join(' · ')}
               </p>
             )}
-
-            {/* Sessions + Rating row */}
             <div className="mentor-profile-page__stats-row">
               <p className="mentor-profile-page__sessions">
-                Total sessions: <strong>{profile?.total_sessions ?? 0}</strong>
+                Total sessions: <strong>{mentor.total_sessions ?? 0}</strong>
               </p>
-              <div
-                className="mentor-profile-page__rating-group"
-                onClick={() => navigate(`/mentor/${profile?.id}/reviews`, {
-                  state: { mentorName: `${profile?.first_name} ${profile?.last_name}` },
-                })}
-                style={{ cursor: 'pointer' }}
-                title="View all reviews"
-              >
+              <div className="mentor-profile-page__rating-group">
                 <p className="mentor-profile-page__rating-text">
                   Rating: {averageRating.toFixed(1)}/5
                 </p>
@@ -189,13 +164,12 @@ const MentorProfilePage = () => {
             </div>
           </div>
 
-          {/* Add role as Student — only if not already both */}
-          {!isBoth && (
+          {!isOwnProfile && (
             <button
               className="mentor-profile-page__add-role-btn"
-              onClick={() => navigate('/register/subjects', { state: { addingRole: true, role: 'student' } })}
+              onClick={() => navigate(`/book/${mentorId}`, { state: { mentor } })}
             >
-              Add role as Student
+              Book a Session
             </button>
           )}
         </section>
@@ -222,6 +196,18 @@ const MentorProfilePage = () => {
             </button>
           </div>
 
+          <p style={{
+            textAlign: 'center',
+            color: 'rgba(5,6,138,0.6)',
+            marginBottom: '12px',
+            fontSize: '14px',
+            fontFamily: 'DM Sans, sans-serif',
+          }}>
+            {isOwnProfile
+              ? 'Click any date to manage your availability'
+              : 'Click any date to request a session'}
+          </p>
+
           <div className="mentor-profile-page__cal-grid">
             {DAY_NAMES.map((day) => (
               <div key={day} className="mentor-profile-page__cal-day-name">
@@ -234,7 +220,6 @@ const MentorProfilePage = () => {
                 day === today.getDate() &&
                 calMonth === today.getMonth() &&
                 calYear === today.getFullYear();
-              const hasSession = day && sessionDays.has(day);
               const isUnavail = day && unavailDays.has(day);
 
               return (
@@ -244,21 +229,29 @@ const MentorProfilePage = () => {
                     'mentor-profile-page__cal-day',
                     !day ? 'mentor-profile-page__cal-day--empty' : '',
                     isToday && !isUnavail ? 'mentor-profile-page__cal-day--today' : '',
-                    hasSession ? 'mentor-profile-page__cal-day--session' : '',
                   ].join(' ')}
-                  onClick={() => {
-                    if (!day) return;
-                    navigate('/availability');
-                  }}
                   style={{
                     cursor: day ? 'pointer' : 'default',
                     background: isUnavail ? 'rgba(220,80,80,0.25)' : undefined,
+                    color: isUnavail ? '#8b0000' : undefined,
                   }}
+                  onClick={() => handleCalendarClick(day)}
                 >
                   {day || ''}
                 </div>
               );
             })}
+          </div>
+
+          <div style={{ display: 'flex', gap: '20px', marginTop: '16px', fontSize: '13px', fontFamily: 'DM Sans, sans-serif' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{
+                width: '14px', height: '14px', borderRadius: '4px',
+                background: 'rgba(220,80,80,0.25)', border: '1px solid rgba(220,80,80,0.5)',
+                display: 'inline-block',
+              }} />
+              <span style={{ color: 'rgba(5,6,138,0.6)' }}>Unavailable</span>
+            </span>
           </div>
         </section>
 
@@ -286,7 +279,6 @@ const MentorProfilePage = () => {
 
       </div>
 
-      {/* Footer logo */}
       <footer className="mentor-profile-page__footer">
         <span className="mentor-profile-page__footer-bold">Mentor</span>
         <span className="mentor-profile-page__footer-regular">Match</span>
@@ -295,5 +287,4 @@ const MentorProfilePage = () => {
   );
 };
 
-export default MentorProfilePage;
-
+export default ViewMentorProfilePage;

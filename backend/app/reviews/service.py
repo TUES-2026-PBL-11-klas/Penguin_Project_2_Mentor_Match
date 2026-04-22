@@ -82,6 +82,7 @@ class ReviewService(IReviewService):
                     "session_id": str(r.session_id),
                     "rating": r.rating,
                     "comment": r.comment,
+                    "created_at": r.created_at.isoformat() if r.created_at else None,
                 }
                 for r in reviews
             ],

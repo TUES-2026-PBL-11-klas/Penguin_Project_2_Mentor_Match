@@ -255,6 +255,44 @@
   color: #ffffff;
 }
 
+/* ── Add Review Banner ── */
+.mentor-reviews-page__add-review-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(60, 180, 120, 0.15);
+  border: 1px solid rgba(60, 180, 120, 0.5);
+  border-radius: 22px;
+  padding: 16px 24px;
+  flex-wrap: wrap;
+}
+
+.mentor-reviews-page__add-review-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: #05068a;
+  margin: 0;
+}
+
+.mentor-reviews-page__add-review-btn {
+  background: rgba(60, 180, 120, 0.8);
+  border: none;
+  border-radius: 20px;
+  padding: 10px 24px;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.mentor-reviews-page__add-review-btn:hover {
+  background: rgba(40, 160, 100, 0.9);
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .mentor-reviews-page__outer-card {

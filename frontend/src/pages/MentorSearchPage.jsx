@@ -28,7 +28,7 @@ const StarRating = ({ rating, max = 5 }) => (
 
 const MentorSearchPage = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   const [mentors, setMentors] = useState([]);
   const [subjects, setSubjects] = useState([]);
