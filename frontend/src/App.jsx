@@ -16,6 +16,7 @@ import LeaveReviewPage             from './pages/LeaveReviewPage';       // Figm
 import AvailabilityPage            from './pages/AvailabilityPage';
 import ViewMentorProfilePage       from './pages/ViewMentorProfilePage';
 import SessionsPage                from './pages/SessionsPage';
+import StudentSessionsPage         from './pages/StudentSessionsPage';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -95,6 +96,7 @@ function App() {
         
         <Route path="/availability" element={<PrivateRoute><AvailabilityPage /></PrivateRoute>} />
         <Route path="/sessions" element={<PrivateRoute><SessionsPage /></PrivateRoute>} />
+        <Route path="/student/sessions" element={<PrivateRoute><StudentSessionsPage /></PrivateRoute>} />
         {/* ════════════════════════════════════════════════════════════════════
             PUBLIC ROUTES — no login required
             ════════════════════════════════════════════════════════════════ */}

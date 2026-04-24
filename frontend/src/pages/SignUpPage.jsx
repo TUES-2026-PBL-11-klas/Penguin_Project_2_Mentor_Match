@@ -6,7 +6,7 @@ const BG_IMAGE = 'https://www.figma.com/api/mcp/asset/4dd02d25-3866-4a15-b953-ab
 const ARROW_ICON = 'https://www.figma.com/api/mcp/asset/228e00cb-d198-4914-882d-bc1d445f2b8f';
 
 const GRADES = [8, 9, 10, 11, 12];
-const CLASSES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const CLASSES = ['А', 'Б', 'В', 'Г'];
 
 const SignUpPage = () => {
   const navigate = useNavigate();

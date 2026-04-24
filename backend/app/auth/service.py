@@ -77,8 +77,8 @@ class UserService:
 
         if not (8 <= grade <= 12):
             raise ValueError("Grade must be between 8 and 12.")
-        if class_letter.upper() not in list("ABCDEFG"):
-            raise ValueError("Class letter must be A-G.")
+        if class_letter not in ('А', 'Б', 'В', 'Г'):
+            raise ValueError("Class letter must be А, Б, В, or Г.")
         if role not in ("student", "mentor", "both"):
             raise ValueError("Role must be student, mentor, or both.")
 
@@ -90,7 +90,7 @@ class UserService:
             first_name=first_name.strip(),
             last_name=last_name.strip(),
             grade=grade,
-            class_letter=class_letter.upper(),
+            class_letter=class_letter,
             role=role,
         )
         self._repo.create(user)

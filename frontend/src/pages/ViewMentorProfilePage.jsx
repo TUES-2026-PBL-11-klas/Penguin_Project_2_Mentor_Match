@@ -155,7 +155,14 @@ const ViewMentorProfilePage = () => {
               <p className="mentor-profile-page__sessions">
                 Total sessions: <strong>{mentor.total_sessions ?? 0}</strong>
               </p>
-              <div className="mentor-profile-page__rating-group">
+              <div
+                className="mentor-profile-page__rating-group"
+                onClick={() => navigate(`/mentor/${mentorId}/reviews`, {
+                  state: { mentorName: `${mentor.first_name} ${mentor.last_name}` },
+                })}
+                style={{ cursor: 'pointer' }}
+                title="View all reviews"
+              >
                 <p className="mentor-profile-page__rating-text">
                   Rating: {averageRating.toFixed(1)}/5
                 </p>

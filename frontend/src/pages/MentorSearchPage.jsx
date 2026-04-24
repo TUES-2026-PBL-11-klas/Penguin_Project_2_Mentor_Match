@@ -138,7 +138,7 @@ const MentorSearchPage = () => {
               onClick={() => handleMentorClick(mentor)}
               aria-label={`View profile of ${mentor.first_name} ${mentor.last_name}`}
             >
-              {/* Left: name + sessions */}
+              {/* Left: name + subjects + sessions */}
               <div className="mentor-search-page__card-left">
                 <h2 className="mentor-search-page__mentor-name">
                   {mentor.first_name} {mentor.last_name}
@@ -146,6 +146,11 @@ const MentorSearchPage = () => {
                 <p className="mentor-search-page__mentor-meta">
                   Grade {mentor.grade}{mentor.class_letter}
                 </p>
+                {mentor.subjects?.length > 0 && (
+                  <p className="mentor-search-page__mentor-subjects">
+                    {mentor.subjects.map((s) => s.name).join(' · ')}
+                  </p>
+                )}
                 <p className="mentor-search-page__mentor-sessions">
                   Total sessions: <strong>{mentor.total_sessions ?? 0}</strong>
                 </p>

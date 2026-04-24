@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session as DBSession
 
 from app.db.models.availability import Availability, UnavailableSlot
 from app.db.models.session import Session as SessionModel
-from app.db.models.subject import MentorSubject
+from app.db.models.subject import MentorSubject, Subject
 from app.db.models.user import User
 from app.sessions.exceptions import (
     MentorUnavailableException,
@@ -233,7 +233,9 @@ class SessionService:
             {
                 "id": str(s.id),
                 "subject_id": s.subject_id,
+                "subject_name": s.subject.name if s.subject else "",
                 "mentor_id": str(s.mentor_id),
+                "mentor_name": f"{s.mentor.first_name} {s.mentor.last_name}" if s.mentor else "",
                 "scheduled_at": s.scheduled_at.isoformat(),
                 "end_at": s.end_at.isoformat(),
                 "duration_minutes": s.duration_minutes,
@@ -257,7 +259,9 @@ class SessionService:
             {
                 "id": str(s.id),
                 "subject_id": s.subject_id,
+                "subject_name": s.subject.name if s.subject else "",
                 "mentor_id": str(s.mentor_id),
+                "mentor_name": f"{s.mentor.first_name} {s.mentor.last_name}" if s.mentor else "",
                 "scheduled_at": s.scheduled_at.isoformat(),
                 "duration_minutes": s.duration_minutes,
                 "has_review": str(s.id) in reviewed_ids,
@@ -365,6 +369,12 @@ class SessionService:
         for ms in ms_rows:
             mentor_subject_map.setdefault(ms.mentor_id, []).append(ms.subject_id)
 
+        all_subject_ids = {sid for ids in mentor_subject_map.values() for sid in ids}
+        subject_name_map: Dict[int, str] = {}
+        if all_subject_ids:
+            for s in self._db.query(Subject).filter(Subject.id.in_(all_subject_ids)).all():
+                subject_name_map[s.id] = s.name
+
         context = {
             "subject_id": subject_id,
             "avg_ratings": avg_ratings,
@@ -383,7 +393,10 @@ class SessionService:
                 "grade": m.grade,
                 "class_letter": m.class_letter,
                 "average_rating": avg_ratings.get(m.id, 0.0),
-                "subject_ids": mentor_subject_map.get(m.id, []),
+                "subjects": [
+                    {"id": sid, "name": subject_name_map.get(sid, "")}
+                    for sid in mentor_subject_map.get(m.id, [])
+                ],
             }
             for m in ranked
         ]

@@ -1,11 +1,12 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, Column, DateTime, Enum, Integer, String, Text
+from sqlalchemy import CheckConstraint, Column, DateTime, Enum, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
+
 
 class User(Base):
     """
@@ -28,7 +29,7 @@ class User(Base):
     )
     class_letter = Column(
         String(1),
-        CheckConstraint("class_letter IN ('A','B','C','D','E','F','G')"),
+        CheckConstraint("class_letter IN ('А','Б','В','Г')"),
         nullable=False,
     )
 

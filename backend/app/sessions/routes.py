@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from uuid import UUID
 
@@ -6,15 +7,62 @@ from flask import Blueprint, g, jsonify, request
 from app.auth.middleware import require_auth, require_mentor
 from app.db.models.user import User
 from app.db.session import get_db
+from app.notifications.service import WebPushNotificationService
 from app.sessions.exceptions import (
     MentorUnavailableException,
     SessionConflictException,
     SessionNotFoundException,
     UnauthorizedSessionActionException,
 )
-from app.sessions.service import SessionService
+from app.sessions.service import SessionEventObserver, SessionService
 
 sessions_bp = Blueprint("sessions", __name__, url_prefix="/api/sessions")
+
+_notif_svc = WebPushNotificationService(
+    vapid_private_key=os.getenv("VAPID_PRIVATE_KEY", "dummy_private_key"),
+    vapid_claims={"sub": f"mailto:{os.getenv('VAPID_ADMIN_EMAIL', 'admin@mentormatch.local')}"},
+)
+
+
+class _NotificationObserver(SessionEventObserver):
+    def __init__(self, db):
+        self._db = db
+
+    def _send(self, user_id, title, message, ntype, session_id):
+        try:
+            _notif_svc.send_notification(
+                db=self._db, user_id=user_id,
+                title=title, message=message,
+                type=ntype, session_id=session_id,
+            )
+        except Exception:
+            pass
+
+    def on_session_requested(self, session):
+        self._send(session.mentor_id, "New Session Request",
+                   "A student has requested a session with you.",
+                   "new_request", session.id)
+
+    def on_session_confirmed(self, session):
+        self._send(session.mentee_id, "Session Confirmed",
+                   "Your session request has been confirmed!",
+                   "session_confirmed", session.id)
+
+    def on_session_declined(self, session):
+        self._send(session.mentee_id, "Session Declined",
+                   "Your session request has been declined.",
+                   "session_declined", session.id)
+
+    def on_session_completed(self, session):
+        self._send(session.mentee_id, "Rate Your Session",
+                   "Your session is complete — leave a review for your mentor!",
+                   "rate_session", session.id)
+
+
+def _make_svc(db) -> SessionService:
+    svc = SessionService(db)
+    svc.register_observer(_NotificationObserver(db))
+    return svc
 
 
 # ------------------------------------------------------------------
@@ -40,7 +88,7 @@ def request_session():
         return jsonify({"error": f"Invalid input: {e}"}), 400
 
     with get_db() as db:
-        svc = SessionService(db)
+        svc = _make_svc(db)
         try:
             session = svc.request_session(
                 mentor_id=mentor_id,
@@ -95,7 +143,7 @@ def get_pending_requests():
 def confirm_session(session_id: str):
     """POST /api/sessions/<id>/confirm"""
     with get_db() as db:
-        svc = SessionService(db)
+        svc = _make_svc(db)
         try:
             session = svc.confirm_session(UUID(session_id), g.current_user_id)
             return jsonify({"status": session.status}), 200
@@ -108,7 +156,7 @@ def confirm_session(session_id: str):
 def decline_session(session_id: str):
     """POST /api/sessions/<id>/decline"""
     with get_db() as db:
-        svc = SessionService(db)
+        svc = _make_svc(db)
         try:
             session = svc.decline_session(UUID(session_id), g.current_user_id)
             return jsonify({"status": session.status}), 200
@@ -125,7 +173,7 @@ def decline_session(session_id: str):
 def cancel_session(session_id: str):
     """POST /api/sessions/<id>/cancel"""
     with get_db() as db:
-        svc = SessionService(db)
+        svc = _make_svc(db)
         try:
             session = svc.cancel_session(UUID(session_id), g.current_user_id)
             return jsonify({"status": session.status}), 200

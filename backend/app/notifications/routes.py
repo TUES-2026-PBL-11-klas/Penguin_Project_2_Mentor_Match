@@ -50,6 +50,21 @@ def get_notifications():
             return jsonify({"error": str(e)}), 500
 
 
+@notifications_bp.route("/<notification_id>/read", methods=["PATCH"])
+@require_auth
+def mark_read(notification_id: str):
+    """PATCH /api/notifications/<id>/read — mark a notification as read."""
+    try:
+        nid = UUID(notification_id)
+    except ValueError:
+        return jsonify({"error": "Invalid notification ID"}), 400
+    with get_db() as db:
+        ok = notification_service.mark_as_read(db, g.current_user_id, nid)
+        if ok:
+            return jsonify({"message": "Marked as read"}), 200
+        return jsonify({"error": "Not found"}), 404
+
+
 @notifications_bp.route("/test-dispatch", methods=["POST"])
 @require_auth
 def test_dispatch():

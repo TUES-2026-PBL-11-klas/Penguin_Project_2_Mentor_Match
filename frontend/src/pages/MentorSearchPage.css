@@ -209,6 +209,14 @@
   margin: 0;
 }
 
+.mentor-search-page__mentor-subjects {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #4d5cd0;
+  margin: 0;
+  font-weight: 500;
+}
+
 .mentor-search-page__mentor-sessions {
   font-family: 'DM Sans', sans-serif;
   font-size: 18.791px;

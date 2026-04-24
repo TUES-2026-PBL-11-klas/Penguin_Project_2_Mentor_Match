@@ -106,6 +106,48 @@ def send_24h_reminders() -> None:
         SessionLocal.remove()
 
 
+def auto_complete_sessions() -> None:
+    """Mark confirmed sessions whose end_at has passed as completed and notify the student."""
+    db = SessionLocal()
+    try:
+        now = datetime.utcnow()
+        due = db.scalars(
+            select(SessionModel).where(
+                and_(
+                    SessionModel.status == "confirmed",
+                    SessionModel.end_at <= now,
+                )
+            )
+        ).all()
+
+        if not due:
+            return
+
+        from app.sessions.service import SessionService
+        svc = SessionService(db)
+        notif_svc = _notification_service()
+
+        for session in due:
+            try:
+                svc.complete_session(session.id)
+                logger.info("Auto-completed session %s", session.id)
+                notif_svc.send_notification(
+                    db=db,
+                    user_id=session.mentee_id,
+                    title="Rate Your Session",
+                    message="Your session is complete — leave a review for your mentor!",
+                    type="rate_session",
+                    session_id=session.id,
+                )
+            except Exception as exc:
+                logger.error("Failed to auto-complete session %s: %s", session.id, exc)
+
+    except Exception as exc:
+        logger.error("auto_complete_sessions job failed: %s", exc)
+    finally:
+        SessionLocal.remove()
+
+
 def start_scheduler() -> BackgroundScheduler:
     scheduler = BackgroundScheduler(timezone="UTC")
     scheduler.add_job(
@@ -115,6 +157,13 @@ def start_scheduler() -> BackgroundScheduler:
         id="send_24h_reminders",
         replace_existing=True,
     )
+    scheduler.add_job(
+        auto_complete_sessions,
+        trigger="interval",
+        minutes=15,
+        id="auto_complete_sessions",
+        replace_existing=True,
+    )
     scheduler.start()
-    logger.info("APScheduler started — 24h reminder job registered.")
+    logger.info("APScheduler started — reminder and auto-complete jobs registered.")
     return scheduler
